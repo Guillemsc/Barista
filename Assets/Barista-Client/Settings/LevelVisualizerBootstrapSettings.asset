@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd50923e3bb209844b0d021731c2a628, type: 3}
+  m_Name: LevelVisualizerBootstrapSettings
+  m_EditorClassIdentifier: 
+  levelAsset: {fileID: 11400000, guid: 843013c354d39c34a9d3e5f835759f4b, type: 2}

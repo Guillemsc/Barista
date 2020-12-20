@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3876a7d696f5e9241b00f1d710e70c95, type: 3}
+  m_Name: EnvironmentsLibrary
+  m_EditorClassIdentifier: 
+  items:
+  - typeId: test
+    prefab: {fileID: 6390798230445512675, guid: 9e4879dc70c85ea4182fd2db4b48e07c,
+      type: 3}

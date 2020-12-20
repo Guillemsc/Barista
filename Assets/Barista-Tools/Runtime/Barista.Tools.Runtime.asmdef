@@ -1,0 +1,17 @@
+{
+    "name": "Barista.Tools.Runtime",
+    "references": [
+        "GUID:b8e24fd1eb19b4226afebb2810e3c19b",
+        "GUID:9e2a0871e420eb64685e511167cd0d57",
+        "GUID:78f791876252170459a4a8bc9b51ad73"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,18 @@
+{
+    "name": "Barista.Client.Editor",
+    "references": [
+        "GUID:78f791876252170459a4a8bc9b51ad73",
+        "GUID:e0c13596d568ddb45ac614d4cabc6676",
+        "GUID:66f84fddbd56756439bdf88a8207ce7e",
+        "GUID:9a64ff96d3b16d7498c8f46b660d81a0"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
