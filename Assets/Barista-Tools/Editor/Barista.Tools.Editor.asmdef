@@ -1,9 +1,10 @@
 {
     "name": "Barista.Tools.Editor",
     "references": [
-        "GUID:002c1bbed08fa44d282ef34fd5edb138",
-        "GUID:b8e24fd1eb19b4226afebb2810e3c19b",
-        "GUID:2ac45f26c27389f4998addfe0c60511a"
+        "GUID:2ac45f26c27389f4998addfe0c60511a",
+        "GUID:78f791876252170459a4a8bc9b51ad73",
+        "GUID:9e2a0871e420eb64685e511167cd0d57",
+        "GUID:e0c13596d568ddb45ac614d4cabc6676"
     ],
     "includePlatforms": [
         "Editor"

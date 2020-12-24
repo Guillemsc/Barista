@@ -13,23 +13,26 @@ namespace Barista.Shared.EntryPoints
 
         private readonly IEventDispatcher eventDispatcher;
 
-        public LevelEntryPoint(IEventDispatcher eventDispatcher, LevelConfiguration levelConfiguration)
+        public LevelEntryPoint(IEventDispatcher eventDispatcher, LevelSetup levelSetup)
         {
             this.eventDispatcher = eventDispatcher;
 
             IIdGenerator idGenerator = new IncrementalIdGenerator();
 
             EnvironmentEntityFactory environmentEntityFactory = new EnvironmentEntityFactory(idGenerator);
+            HeroEntityFactory heroEntityFactory = new HeroEntityFactory(idGenerator);
 
             EnvironmentEntityRepository environmentEntityRepository = new EnvironmentEntityRepository(environmentEntityFactory);
+            HeroEntityRepository heroEntityRepository = new HeroEntityRepository(heroEntityFactory);
 
             LevelState levelState = new LevelState();
 
             levelActionsRepository = new LevelActionsRepository(
                 new SetupLevelAction(
                     eventDispatcher,
-                    levelConfiguration,
+                    levelSetup,
                     environmentEntityRepository,
+                    heroEntityRepository,
                     levelState
                     ),
 

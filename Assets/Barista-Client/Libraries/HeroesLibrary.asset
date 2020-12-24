@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31afe588dba6c674ba51a3d9cf74a566, type: 3}
   m_Name: HeroesLibrary
   m_EditorClassIdentifier: 
-  items: []
+  items:
+  - typeId: test
+    prefab: {fileID: 7409782501138042984, guid: 37fca3c9f6205a346ad40b95dffeab2c,
+      type: 3}

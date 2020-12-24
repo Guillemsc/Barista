@@ -27,7 +27,7 @@ namespace Barista.Client.Actions
         {
             InstructionsSequence sequence = new InstructionsSequence();
 
-            sequence.Append(new UnloadAllEnvironmentViewsInstruction(environmentEntityViewRepository));
+            sequence.Append(new UnloadAllEnvironmentEntityViewsInstruction(environmentEntityViewRepository));
 
             sequence.Append(new InputSetActiveInstruction(mainInput, false));
 

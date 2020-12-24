@@ -9,6 +9,8 @@ namespace Barista.Client.Libraries
     {
         [SerializeField] private List<EnvironmentsLibraryItem> items = new List<EnvironmentsLibraryItem>();
 
+        public IReadOnlyList<EnvironmentsLibraryItem> Items => items;
+
         public bool TryGetItem(string typeId, out EnvironmentEntityView environmentEntityView)
         {
             foreach (EnvironmentsLibraryItem item in items)

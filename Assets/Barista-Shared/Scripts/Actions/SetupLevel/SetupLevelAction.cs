@@ -9,29 +9,37 @@ namespace Barista.Shared.Actions
     public class SetupLevelAction : ISetupLevelAction
     {
         private readonly IEventDispatcher eventDispatcher;
-        private readonly LevelConfiguration levelConfiguration;
+        private readonly LevelSetup levelSetup;
         private readonly EnvironmentEntityRepository environmentEntityRepository;
+        private readonly HeroEntityRepository heroEntityRepository;
         private readonly LevelState levelState;
 
         public SetupLevelAction(
             IEventDispatcher eventDispatcher,
-            LevelConfiguration levelConfiguration,
+            LevelSetup levelConfiguration,
             EnvironmentEntityRepository environmentEntityRepository,
+            HeroEntityRepository heroEntityRepository,
             LevelState levelState
             )
         {
             this.eventDispatcher = eventDispatcher;
-            this.levelConfiguration = levelConfiguration;
+            this.levelSetup = levelConfiguration;
             this.environmentEntityRepository = environmentEntityRepository;
+            this.heroEntityRepository = heroEntityRepository;
             this.levelState = levelState;
         }
 
         public void Invoke()
         {
-            EnvironmentEntity environmentEntity = environmentEntityRepository.Spawn(levelConfiguration.EnvironmentConfiguration);
+            EnvironmentEntity environmentEntity = environmentEntityRepository.Spawn(levelSetup.EnvironmentConfiguration);
             levelState.loadedEnvironmentId = environmentEntity.InstanceId;
 
-            eventDispatcher.Dispatch(new SetupLevelOutEvent(environmentEntity));
+            HeroEntity heroEntity = heroEntityRepository.Spawn(levelSetup.HeroConfiguration);
+
+            eventDispatcher.Dispatch(new SetupLevelOutEvent(
+                environmentEntity, 
+                heroEntity
+                ));
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Barista.Client.Bootstraps
 
             LevelContext levelContext = ContextsProvider.GetContext<LevelContext>();
 
-            levelContext.StartLevel(settings.LevelAsset);
+            levelContext.StartLevel(settings.LevelConfiguration);        
         }
     }
 }

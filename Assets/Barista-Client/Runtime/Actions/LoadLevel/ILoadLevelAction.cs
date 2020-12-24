@@ -6,7 +6,8 @@ namespace Barista.Client.Actions
     public interface ILoadLevelAction
     {
         void Invoke(
-            EnvironmentEntity environmentEntity
+            EnvironmentEntity environmentEntity,
+            HeroEntity heroEntity
             );
     }
 }

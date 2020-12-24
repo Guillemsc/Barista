@@ -1,8 +1,8 @@
-﻿using Barista.Client.Assets;
+﻿using Barista.Client.Configuration.Levels;
 using Barista.Client.EntryPoints;
 using Barista.Shared.Configuration;
 using Barista.Shared.EntryPoints;
-using Juce.Core.Ammount;
+using Juce.Core.Containers;
 using Juce.Core.Events;
 using Juce.CoreUnity.Contexts;
 using System.Collections.Generic;
@@ -29,15 +29,15 @@ namespace Barista.Client.Contexts.Level
             ContextsProvider.Unregister(this);
         }
 
-        public void StartLevel(LevelAsset levelAsset)
+        public void StartLevel(LevelConfiguration levelConfiguration)
         {
-            LevelConfiguration levelConfiguration = GetTestConfiguration(levelAsset);
+           LevelSetup levelSetup = GetTestSetup(levelConfiguration);
 
             IEventDispatcher eventDispatcher = new EventDispatcher();
 
             levelEntryPoint = new LevelEntryPoint(
                 eventDispatcher,
-                levelConfiguration
+                levelSetup
                 );
 
             LevelViewEntryPointSettings settings = new LevelViewEntryPointSettings(
@@ -79,15 +79,33 @@ namespace Barista.Client.Contexts.Level
             //}
         }
 
-        private LevelConfiguration GetTestConfiguration(LevelAsset levelAsset)
+        private LevelSetup GetTestSetup(LevelConfiguration levelConfiguration)
         {
-            EnvironmentConfiguration testEnvironmentConfiguration = new EnvironmentConfiguration(
-                levelAsset.EnvironmentTypeId
+            EnvironmentSetup testEnvironmentSetup = new EnvironmentSetup(
+                levelConfiguration.EnvironmentTypeId,
+                WalkabilityGridToInt2(levelConfiguration.WalkabilityGrid)
                 );
 
-            return new LevelConfiguration(
-                testEnvironmentConfiguration
+            HeroSetup heroSetup = new HeroSetup(
+                "test"
                 );
+
+            return new LevelSetup(
+                testEnvironmentSetup,
+                heroSetup
+                );
+        }
+
+        private IReadOnlyList<Int2> WalkabilityGridToInt2(IReadOnlyList<Vector2Int> walkabilityGrid)
+        {
+            List<Int2> ret = new List<Int2>(walkabilityGrid.Count);
+
+            foreach(Vector2Int vector in walkabilityGrid)
+            {
+                ret.Add(new Int2(vector.x, vector.y));
+            }
+
+            return ret;
         }
     }
 }

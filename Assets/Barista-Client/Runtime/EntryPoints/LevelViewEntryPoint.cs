@@ -37,6 +37,7 @@ namespace Barista.Client.EntryPoints
             this.settings = settings;
             this.eventDispatcher = eventDispatcher;
             this.environmentsLibrary = environmentsLibrary;
+            this.heroesLibrary = heroesLibrary;
         }
 
         protected override void OnExecute()
@@ -65,6 +66,7 @@ namespace Barista.Client.EntryPoints
 
             // Ui
 
+            // Factories
             IEnvironmentEntityViewFactory environmentEntityViewFactory = new EnvironmentEntityViewFactory(
                 environmentsLibrary
                 );
@@ -74,7 +76,13 @@ namespace Barista.Client.EntryPoints
                 );
 
             // Repositories
-            EnvironmentEntityViewRepository environmentEntityViewRepository = new EnvironmentEntityViewRepository(environmentEntityViewFactory);
+            EnvironmentEntityViewRepository environmentEntityViewRepository = new EnvironmentEntityViewRepository(
+                environmentEntityViewFactory
+                );
+
+            HeroEntityViewRepository heroEntityViewRepository = new HeroEntityViewRepository(
+                heroEntityViewFactory
+                );
 
             LevelTimelines levelTimelines = new LevelTimelines();
             tickablesService.AddTickable(levelTimelines);
@@ -85,6 +93,7 @@ namespace Barista.Client.EntryPoints
                 new LoadLevelAction(
                     levelTimelines,
                     environmentEntityViewRepository,
+                    heroEntityViewRepository,
                     mainInput
                     ),
 
@@ -114,7 +123,10 @@ namespace Barista.Client.EntryPoints
         {
             eventDispatcher.Subscribe((SetupLevelOutEvent ev) =>
             {
-                levelActionsRepository.LoadLevelAction.Invoke(ev.EnvironmentEntity);
+                levelActionsRepository.LoadLevelAction.Invoke(
+                    ev.EnvironmentEntity,
+                    ev.HeroEntity
+                    );
             });
 
             eventDispatcher.Subscribe((LevelCompletedOutEvent ev) =>
