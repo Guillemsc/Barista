@@ -10,17 +10,20 @@ namespace Barista.Client.View.Entities.Environment
     public class EnvironmentEntityView : MonoBehaviour, IEntityView<string>
     {
         [Header("Setup")]
+        [SerializeField] private GridLayout gridLayout = default;
         [SerializeField] private Tilemap walkabilityTilemap = default;
+        [SerializeField] private TilemapRenderer walkabilityTilemapRenderer = default;
 
         [Header("Spawns")]
         [SerializeField] private HeroEntitySpawnView heroEntitySpawnView = default;
 
         [Header("General")]
-        [SerializeField] private List<GameObject> toDisable = default;
+        [SerializeField] private List<Component> toDisable = default;
 
         public string TypeId { get; private set; }
         public int InstanceId { get; private set; }
 
+        public GridLayout GridLayout => gridLayout;
         public Tilemap WalkabilityTilemap => walkabilityTilemap;
         public HeroEntitySpawnView HeroEntitySpawnView => heroEntitySpawnView;
 
@@ -43,10 +46,7 @@ namespace Barista.Client.View.Entities.Environment
 
         private void DisableGameObjects()
         {
-            foreach(GameObject gameObject in toDisable)
-            {
-                gameObject.SetActive(false);
-            }
+            walkabilityTilemapRenderer.enabled = false;
         }
     }
 }

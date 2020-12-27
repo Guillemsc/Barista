@@ -155,6 +155,7 @@ MonoBehaviour:
       environmentsLibrary: {fileID: 11400000, guid: 8866608cd8138774c96a56f4035375e5,
         type: 2}
       heroesLibrary: {fileID: 11400000, guid: c8ba3877cd60aa246bcdfb7a58266815, type: 2}
+      enemiesLibrary: {fileID: 11400000, guid: 3eeb2e1418444514683fd43c2ff7e42c, type: 2}
 --- !u!4 &2037006860
 Transform:
   m_ObjectHideFlags: 0

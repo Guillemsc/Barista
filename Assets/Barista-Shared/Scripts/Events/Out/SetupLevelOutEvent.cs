@@ -1,4 +1,5 @@
 ﻿using Barista.Shared.Entities.Environment;
+using Barista.Shared.Entities.Hero;
 
 namespace Barista.Shared.Events
 {

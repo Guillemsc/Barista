@@ -20,6 +20,7 @@ namespace Barista.Client.Input
         public void CleanUp()
         {
             mainInput.Main.MousePosition.performed -= Performed;
+
             OnPerformed = null;
         }
 

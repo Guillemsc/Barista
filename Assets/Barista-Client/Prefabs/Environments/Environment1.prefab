@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 2260623200250855195}
   - component: {fileID: 6390798230445512675}
   m_Layer: 0
-  m_Name: Environment
+  m_Name: Environment1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -74,7 +74,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8aaf094c88088046a8cecd97d3b2cb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridLayout: {fileID: 7149621806123399497}
   walkabilityTilemap: {fileID: 5258422577255330972}
+  walkabilityTilemapRenderer: {fileID: 2323519451396532861}
   heroEntitySpawnView: {fileID: 5313839572828113241}
   toDisable:
   - {fileID: 2882352958095132971}
@@ -6565,7 +6567,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7281971577023054153}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 6.49, y: -4.45, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2770778040081096061}

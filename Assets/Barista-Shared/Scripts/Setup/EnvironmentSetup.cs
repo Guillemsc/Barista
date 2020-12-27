@@ -8,7 +8,10 @@ namespace Barista.Shared.Configuration
         public string TypeId { get; }
         public IReadOnlyList<Int2> WalkabilityGrid { get; }
 
-        public EnvironmentSetup(string typeId, IReadOnlyList<Int2> walkabilityGrid)
+        public EnvironmentSetup(
+            string typeId, 
+            IReadOnlyList<Int2> walkabilityGrid
+            )
         {
             TypeId = typeId;
             WalkabilityGrid = walkabilityGrid;

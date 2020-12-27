@@ -3,7 +3,7 @@ using Juce.Core.Architecture;
 using Juce.Core.Contracts;
 using System.Collections.Generic;
 
-namespace Barista.Shared.Entities.Environment
+namespace Barista.Shared.Entities.Hero
 {
     public class HeroEntityRepository : IRepository<HeroEntity>
     {
@@ -16,9 +16,9 @@ namespace Barista.Shared.Entities.Environment
             this.heroEntityFactory = heroEntityFactory;
         }
 
-        public HeroEntity Spawn(HeroSetup heroConfiguration)
+        public HeroEntity Spawn(HeroSetup heroSetup)
         {
-            HeroEntity heroEntity = heroEntityFactory.Create(heroConfiguration);
+            HeroEntity heroEntity = heroEntityFactory.Create(heroSetup);
 
             elements.Add(heroEntity.InstanceId, heroEntity);
 

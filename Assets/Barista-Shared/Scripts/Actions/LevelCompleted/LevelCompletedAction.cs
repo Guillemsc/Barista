@@ -20,8 +20,6 @@ namespace Barista.Shared.Actions
 
         public void Invoke()
         {
-            levelState.Playing = false;
-            levelState.Completed = true;
 
             eventDispatcher.Dispatch(new LevelCompletedOutEvent());
         }

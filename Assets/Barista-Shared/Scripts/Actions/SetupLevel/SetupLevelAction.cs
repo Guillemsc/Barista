@@ -1,5 +1,6 @@
 ﻿using Barista.Shared.Configuration;
 using Barista.Shared.Entities.Environment;
+using Barista.Shared.Entities.Hero;
 using Barista.Shared.EntryPoints;
 using Barista.Shared.Events;
 using Juce.Core.Events;
@@ -32,9 +33,11 @@ namespace Barista.Shared.Actions
         public void Invoke()
         {
             EnvironmentEntity environmentEntity = environmentEntityRepository.Spawn(levelSetup.EnvironmentConfiguration);
-            levelState.loadedEnvironmentId = environmentEntity.InstanceId;
+            levelState.LoadedEnvironmentId = environmentEntity.InstanceId;
 
             HeroEntity heroEntity = heroEntityRepository.Spawn(levelSetup.HeroConfiguration);
+            heroEntity.GridPosition = levelSetup.HeroConfiguration.SpawnPosition;
+            levelState.LoadedHeroId = heroEntity.InstanceId;
 
             eventDispatcher.Dispatch(new SetupLevelOutEvent(
                 environmentEntity, 

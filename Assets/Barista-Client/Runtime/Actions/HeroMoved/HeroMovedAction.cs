@@ -1,0 +1,43 @@
+﻿using Barista.Client.Instructions.Hero;
+using Barista.Client.Timelines;
+using Barista.Client.View.Entities.Environment;
+using Barista.Client.View.Entities.Hero;
+using Barista.Shared.Entities.Environment;
+using Barista.Shared.Entities.Hero;
+using Juce.Core.Containers;
+using Juce.Core.Sequencing;
+using System.Collections.Generic;
+
+namespace Barista.Client.Actions
+{
+    public class HeroMovedAction : IHeroMovedAction
+    {
+        private readonly LevelTimelines levelTimelines;
+        private readonly EnvironmentEntityViewRepository environmentEntityViewRepository;
+        private readonly HeroEntityViewRepository heroEntityViewRepository;
+
+        public HeroMovedAction(
+            LevelTimelines levelTimelines,
+            EnvironmentEntityViewRepository environmentEntityViewRepository,
+            HeroEntityViewRepository heroEntityViewRepository
+            )
+        {
+            this.levelTimelines = levelTimelines;
+            this.environmentEntityViewRepository = environmentEntityViewRepository;
+            this.heroEntityViewRepository = heroEntityViewRepository;
+        }
+
+        public void Invoke(EnvironmentEntity environmentEntity, HeroEntity heroEntity, IReadOnlyList<Int2> path)
+        {
+            InstructionsSequence sequence = new InstructionsSequence();
+
+            sequence.Append(new MoveHeroEntityViewAlongPathInstruction(
+                environmentEntityViewRepository.GetLazy(environmentEntity.InstanceId),
+                heroEntityViewRepository.GetLazy(heroEntity.InstanceId),
+                path
+                ));
+
+            levelTimelines.MainTimeline.Play(sequence);
+        }
+    }
+}

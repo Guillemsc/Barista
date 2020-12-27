@@ -1,7 +1,7 @@
 ﻿using Barista.Client.View.Entities.Hero;
 using Juce.Core.Sequencing;
 
-namespace Barista.Client.Instructions.Level
+namespace Barista.Client.Instructions.Hero
 {
     public class SpawnHeroEntityViewInstruction : InstantInstruction
     {

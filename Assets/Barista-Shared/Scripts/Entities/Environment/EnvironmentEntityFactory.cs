@@ -12,9 +12,9 @@ namespace Barista.Shared.Entities.Environment
             this.idGenerator = idGenerator;
         }
 
-        public EnvironmentEntity Create(EnvironmentSetup environmentConfiguration)
+        public EnvironmentEntity Create(EnvironmentSetup environmentSetup)
         {
-            EnvironmentEntity environmentEntity = new EnvironmentEntity(environmentConfiguration.TypeId, idGenerator.Generate());
+            EnvironmentEntity environmentEntity = new EnvironmentEntity(environmentSetup.TypeId, idGenerator.Generate());
 
             return environmentEntity;
         }

@@ -20,7 +20,7 @@ namespace Barista.Shared.Actions
 
         public void Invoke()
         {
-            levelState.Playing = false;
+           
         }
     }
 }

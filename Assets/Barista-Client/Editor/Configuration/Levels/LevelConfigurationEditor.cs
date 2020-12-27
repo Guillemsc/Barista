@@ -1,6 +1,7 @@
 ﻿using Barista.Client.Bootstraps;
 using Barista.Client.Constants;
 using Barista.Client.Libraries;
+using Barista.Client.Utils;
 using Juce.CoreUnity.Assets;
 using Juce.CoreUnity.Scenes;
 using System.Collections.Generic;
@@ -87,7 +88,7 @@ namespace Barista.Client.Configuration.Levels
 
             selectedEnvironmentIndex = EditorGUILayout.Popup("Environments", selectedEnvironmentIndex, options);
 
-            if(selectedEnvironmentIndex < environmentsLibrary.Items.Count)
+            if (selectedEnvironmentIndex < environmentsLibrary.Items.Count)
             {
                 if (lastSelectedEnvironmentIndex != selectedEnvironmentIndex)
                 {
@@ -98,7 +99,7 @@ namespace Barista.Client.Configuration.Levels
 
         private void ValidateDependences(ref bool valid, ref List<string> errors)
         {
-            if(levelVisualizerBootstrapSettings == null)
+            if (levelVisualizerBootstrapSettings == null)
             {
                 valid &= false;
                 errors.Add("Could not find LevelVisualizerBootstrapSettings on the project");
@@ -122,6 +123,8 @@ namespace Barista.Client.Configuration.Levels
 
         private void LoadLevelVisualizer()
         {
+            SaveData();
+
             ScenesUtils.OpenScene(ScenesConstants.LevelVisualizerBootstrapScene);
 
             levelVisualizerBootstrapSettings.LevelConfiguration = targetData;
@@ -138,17 +141,16 @@ namespace Barista.Client.Configuration.Levels
 
             for (int i = 0; i < environmentsLibrary.Items.Count; ++i)
             {
-                if(string.Equals(environmentsLibrary.Items[i].TypeId, targetData.EnvironmentTypeId))
+                if (string.Equals(environmentsLibrary.Items[i].TypeId, targetData.EnvironmentTypeId))
                 {
                     selectedEnvironmentIndex = i;
                 }
             }
-
         }
 
         private void SaveData()
         {
-            if(environmentsLibrary == null)
+            if (environmentsLibrary == null)
             {
                 return;
             }
@@ -158,7 +160,8 @@ namespace Barista.Client.Configuration.Levels
                 EnvironmentsLibraryItem environmentItem = environmentsLibrary.Items[selectedEnvironmentIndex];
 
                 targetData.EnvironmentTypeId = environmentItem.TypeId;
-                targetData.WalkabilityGrid = WalkabilityMapGenerator.Generate(environmentItem.Prefab);
+                targetData.WalkabilityGrid = EnvironmentUtils.GenerateWalkability(environmentItem.Prefab);
+                targetData.HeroSpawnPosition = EnvironmentUtils.GenerateHeroSpawnPosition(environmentItem.Prefab);
             }
 
             EditorUtility.SetDirty(targetData);

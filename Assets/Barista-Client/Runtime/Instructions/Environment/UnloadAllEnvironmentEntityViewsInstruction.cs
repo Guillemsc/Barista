@@ -1,7 +1,7 @@
 ﻿using Barista.Client.View.Entities.Environment;
 using Juce.Core.Sequencing;
 
-namespace Barista.Client.Instructions.Level
+namespace Barista.Client.Instructions.Environment
 {
     public class UnloadAllEnvironmentEntityViewsInstruction : InstantInstruction
     {

@@ -1,7 +1,7 @@
 ﻿using Barista.Shared.Configuration;
 using Juce.Core.Id;
 
-namespace Barista.Shared.Entities.Environment
+namespace Barista.Shared.Entities.Hero
 {
     public class HeroEntityFactory
     {
@@ -12,9 +12,9 @@ namespace Barista.Shared.Entities.Environment
             this.idGenerator = idGenerator;
         }
 
-        public HeroEntity Create(HeroSetup heroConfiguration)
+        public HeroEntity Create(HeroSetup heroSetup)
         {
-            HeroEntity heroEntity = new HeroEntity(heroConfiguration.TypeId, idGenerator.Generate());
+            HeroEntity heroEntity = new HeroEntity(heroSetup.TypeId, idGenerator.Generate());
 
             return heroEntity;
         }

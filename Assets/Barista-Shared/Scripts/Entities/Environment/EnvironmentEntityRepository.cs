@@ -16,9 +16,9 @@ namespace Barista.Shared.Entities.Environment
             this.environmentEntityFactory = environmentEntityFactory;
         }
 
-        public EnvironmentEntity Spawn(EnvironmentSetup environmentConfiguration)
+        public EnvironmentEntity Spawn(EnvironmentSetup environmentSetup)
         {
-            EnvironmentEntity environmentEntity = environmentEntityFactory.Create(environmentConfiguration);
+            EnvironmentEntity environmentEntity = environmentEntityFactory.Create(environmentSetup);
 
             elements.Add(environmentEntity.InstanceId, environmentEntity);
 

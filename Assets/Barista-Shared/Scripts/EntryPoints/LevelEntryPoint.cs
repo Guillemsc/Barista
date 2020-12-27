@@ -1,6 +1,10 @@
 ﻿using Barista.Shared.Actions;
 using Barista.Shared.Configuration;
+using Barista.Shared.Entities.Enemy;
 using Barista.Shared.Entities.Environment;
+using Barista.Shared.Entities.Hero;
+using Barista.Shared.Events;
+using Barista.Shared.Factories;
 using Juce.Core.EntryPoint;
 using Juce.Core.Events;
 using Juce.Core.Id;
@@ -21,9 +25,13 @@ namespace Barista.Shared.EntryPoints
 
             EnvironmentEntityFactory environmentEntityFactory = new EnvironmentEntityFactory(idGenerator);
             HeroEntityFactory heroEntityFactory = new HeroEntityFactory(idGenerator);
+            EnemyEntityFactory enemyEntityFactory = new EnemyEntityFactory(idGenerator);
 
             EnvironmentEntityRepository environmentEntityRepository = new EnvironmentEntityRepository(environmentEntityFactory);
             HeroEntityRepository heroEntityRepository = new HeroEntityRepository(heroEntityFactory);
+            EnemyEntityRepository enemyEntityRepository = new EnemyEntityRepository(enemyEntityFactory);
+
+            PathfindingFactory pathfindingFactory = new PathfindingFactory(levelSetup.EnvironmentConfiguration.WalkabilityGrid);
 
             LevelState levelState = new LevelState();
 
@@ -44,6 +52,14 @@ namespace Barista.Shared.EntryPoints
                 new LevelCompletedAction(
                     eventDispatcher,
                     levelState
+                    ),
+
+                new MoveHeroAction(
+                    eventDispatcher,
+                    environmentEntityRepository,
+                    heroEntityRepository,
+                    pathfindingFactory,
+                    levelState
                     )
                 );
         }
@@ -57,10 +73,10 @@ namespace Barista.Shared.EntryPoints
 
         private void Link()
         {
-            //eventDispatcher.Subscribe((BallCollidedWithEnvironmentInEvent ev) =>
-            //{
-            //    levelActionsRepository.LevelLostAction.Invoke();
-            //});
+            eventDispatcher.Subscribe((MoveHeroInEvent ev) =>
+            {
+                levelActionsRepository.MoveHeroAction.Invoke(ev.Direction);
+            });
         }
     }
 }

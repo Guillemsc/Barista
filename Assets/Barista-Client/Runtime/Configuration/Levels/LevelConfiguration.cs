@@ -9,5 +9,6 @@ namespace Barista.Client.Configuration.Levels
     {
         [SerializeField] public string EnvironmentTypeId { get; set; }
         [SerializeField] public List<Vector2Int> WalkabilityGrid { get; set; }
+        [SerializeField] public Vector2Int HeroSpawnPosition { get; set; }
     }
 }

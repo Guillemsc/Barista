@@ -1,6 +1,4 @@
-﻿using Barista.Shared.Entities.Environment;
-
-namespace Barista.Client.Actions
+﻿namespace Barista.Client.Actions
 {
     public interface ILevelCompletedAction
     {

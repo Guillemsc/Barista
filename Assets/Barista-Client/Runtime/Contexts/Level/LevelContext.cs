@@ -1,5 +1,6 @@
 ﻿using Barista.Client.Configuration.Levels;
 using Barista.Client.EntryPoints;
+using Barista.Client.Utils;
 using Barista.Shared.Configuration;
 using Barista.Shared.EntryPoints;
 using Juce.Core.Containers;
@@ -48,7 +49,8 @@ namespace Barista.Client.Contexts.Level
                 settings,
                 eventDispatcher,
                 levelContextReferences.LevelLibrariesReferences.EnvironmentsLibrary,
-                levelContextReferences.LevelLibrariesReferences.HeroesLibrary
+                levelContextReferences.LevelLibrariesReferences.HeroesLibrary,
+                levelContextReferences.LevelLibrariesReferences.EnemiesLibrary
                 );
 
             levelViewEntryPoint.Execute();
@@ -87,7 +89,8 @@ namespace Barista.Client.Contexts.Level
                 );
 
             HeroSetup heroSetup = new HeroSetup(
-                "test"
+                "test",
+                TilemapUtils.Vector2ToInt2(levelConfiguration.HeroSpawnPosition)
                 );
 
             return new LevelSetup(
@@ -102,7 +105,7 @@ namespace Barista.Client.Contexts.Level
 
             foreach(Vector2Int vector in walkabilityGrid)
             {
-                ret.Add(new Int2(vector.x, vector.y));
+                ret.Add(TilemapUtils.Vector2ToInt2(vector));
             }
 
             return ret;

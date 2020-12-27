@@ -21,34 +21,23 @@ namespace Barista.Client.Input
             ""id"": ""680562f0-db25-4b99-b0f4-61b3f7c469e3"",
             ""actions"": [
                 {
-                    ""name"": ""NextCard"",
-                    ""type"": ""Button"",
-                    ""id"": ""e22bc65b-5c5d-4c9d-9736-dbc08918aa71"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
                     ""name"": ""MousePosition"",
                     ""type"": ""Value"",
                     ""id"": ""6e0cb8b0-0646-445c-8a5a-f63c105414d5"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Movement"",
+                    ""type"": ""Button"",
+                    ""id"": ""9e23d621-3f36-4639-8ca8-f9e8022d297a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""67eb9524-c46e-4c34-81fb-799777f2f397"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""NextCard"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": """",
                     ""id"": ""ae941710-e8d0-4109-b902-77eeda8d74d0"",
@@ -59,6 +48,61 @@ namespace Barista.Client.Input
                     ""action"": ""MousePosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""f4b32ff7-6ebe-4232-8c51-2cc3226a6580"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""5ccd784a-61c8-4248-b8b9-778312f9d9b8"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""23028113-cdb4-44cb-8404-63fef740f0e3"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""cdde16c6-66c1-43cd-a736-a3c47a54a4fe"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""31e7b9e2-6238-4107-a795-962897c60628"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -79,8 +123,8 @@ namespace Barista.Client.Input
 }");
             // Main
             m_Main = asset.FindActionMap("Main", throwIfNotFound: true);
-            m_Main_NextCard = m_Main.FindAction("NextCard", throwIfNotFound: true);
             m_Main_MousePosition = m_Main.FindAction("MousePosition", throwIfNotFound: true);
+            m_Main_Movement = m_Main.FindAction("Movement", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -130,14 +174,14 @@ namespace Barista.Client.Input
         // Main
         private readonly InputActionMap m_Main;
         private IMainActions m_MainActionsCallbackInterface;
-        private readonly InputAction m_Main_NextCard;
         private readonly InputAction m_Main_MousePosition;
+        private readonly InputAction m_Main_Movement;
         public struct MainActions
         {
             private @MainInput m_Wrapper;
             public MainActions(@MainInput wrapper) { m_Wrapper = wrapper; }
-            public InputAction @NextCard => m_Wrapper.m_Main_NextCard;
             public InputAction @MousePosition => m_Wrapper.m_Main_MousePosition;
+            public InputAction @Movement => m_Wrapper.m_Main_Movement;
             public InputActionMap Get() { return m_Wrapper.m_Main; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -147,22 +191,22 @@ namespace Barista.Client.Input
             {
                 if (m_Wrapper.m_MainActionsCallbackInterface != null)
                 {
-                    @NextCard.started -= m_Wrapper.m_MainActionsCallbackInterface.OnNextCard;
-                    @NextCard.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnNextCard;
-                    @NextCard.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnNextCard;
                     @MousePosition.started -= m_Wrapper.m_MainActionsCallbackInterface.OnMousePosition;
                     @MousePosition.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnMousePosition;
                     @MousePosition.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnMousePosition;
+                    @Movement.started -= m_Wrapper.m_MainActionsCallbackInterface.OnMovement;
+                    @Movement.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnMovement;
+                    @Movement.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnMovement;
                 }
                 m_Wrapper.m_MainActionsCallbackInterface = instance;
                 if (instance != null)
                 {
-                    @NextCard.started += instance.OnNextCard;
-                    @NextCard.performed += instance.OnNextCard;
-                    @NextCard.canceled += instance.OnNextCard;
                     @MousePosition.started += instance.OnMousePosition;
                     @MousePosition.performed += instance.OnMousePosition;
                     @MousePosition.canceled += instance.OnMousePosition;
+                    @Movement.started += instance.OnMovement;
+                    @Movement.performed += instance.OnMovement;
+                    @Movement.canceled += instance.OnMovement;
                 }
             }
         }
@@ -178,8 +222,8 @@ namespace Barista.Client.Input
         }
         public interface IMainActions
         {
-            void OnNextCard(InputAction.CallbackContext context);
             void OnMousePosition(InputAction.CallbackContext context);
+            void OnMovement(InputAction.CallbackContext context);
         }
     }
 }

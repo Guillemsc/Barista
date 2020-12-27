@@ -1,4 +1,5 @@
 ﻿using Barista.Client.Input;
+using Barista.Client.Instructions.Environment;
 using Barista.Client.Instructions.Level;
 using Barista.Client.Timelines;
 using Barista.Client.View.Entities.Environment;
