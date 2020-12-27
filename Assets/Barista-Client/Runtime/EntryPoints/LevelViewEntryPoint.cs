@@ -109,6 +109,7 @@ namespace Barista.Client.EntryPoints
                     levelTimelines,
                     environmentEntityViewRepository,
                     heroEntityViewRepository,
+                    enemyEntityViewRepository,
                     mainInput
                     ),
 
@@ -160,7 +161,8 @@ namespace Barista.Client.EntryPoints
             {
                 levelActionsRepository.SetupLevelAction.Invoke(
                     ev.EnvironmentEntity,
-                    ev.HeroEntity
+                    ev.HeroEntity,
+                    ev.EnemyEntities
                     );
             });
 

@@ -3,6 +3,7 @@ using Barista.Shared.Entities.Hero;
 using Barista.Shared.EntryPoints;
 using Barista.Shared.Events;
 using Barista.Shared.Factories;
+using Barista.Shared.Logic;
 using Juce.Core.Containers;
 using Juce.Core.Direction;
 using Juce.Core.Events;
@@ -38,67 +39,18 @@ namespace Barista.Shared.Actions
             EnvironmentEntity environmentEntity = environmentEntityRepository.Get(levelState.LoadedEnvironmentId);
             HeroEntity heroEntity = heroEntityRepository.Get(levelState.LoadedHeroId);
 
-            Int2 newPosition = GetNewPositionFormDirection(direction, heroEntity.GridPosition);
+            bool canMove = HeroMovementLogic.CanMoveHero(pathfindingFactory, heroEntity, direction);
 
-            IReadOnlyList<Int2> path = pathfindingFactory.Create(heroEntity.GridPosition, newPosition);
-
-            if(path.Count == 0)
+            if(!canMove)
             {
                 return;
             }
 
-            bool isSamePosition = path[path.Count - 1] == heroEntity.GridPosition;
+            TurnLogic.StartTurn(eventDispatcher);
 
-            if(isSamePosition)
-            {
-                return;
-            }
+            HeroMovementLogic.MoveHero(eventDispatcher, pathfindingFactory, environmentEntity, heroEntity, direction);
 
-            heroEntity.GridPosition = newPosition;
-
-            eventDispatcher.Dispatch(new StartTurnOutEvent());
-
-            eventDispatcher.Dispatch(new HeroMovedOutEvent(
-                environmentEntity,
-                heroEntity,
-                path
-                ));
-
-            eventDispatcher.Dispatch(new EndTurnOutEvent());
-        }
-
-        private Int2 GetNewPositionFormDirection(Direction4Axis direction, Int2 position)
-        {
-            Int2 newPosition = new Int2(position);
-
-            switch(direction)
-            {
-                case Direction4Axis.Up:
-                    {
-                        newPosition.Y += 1;
-                    }
-                    break;
-
-                case Direction4Axis.Down:
-                    {
-                        newPosition.Y -= 1;
-                    }
-                    break;
-
-                case Direction4Axis.Left:
-                    {
-                        newPosition.X -= 1;
-                    }
-                    break;
-
-                case Direction4Axis.Right:
-                    {
-                        newPosition.X += 1;
-                    }
-                    break;
-            }
-
-            return newPosition;
+            TurnLogic.EndTurn(eventDispatcher);
         }
     }
 }

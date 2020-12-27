@@ -42,7 +42,7 @@ namespace Barista.Client.Utils
             return ret;
         }
 
-        public static Vector2Int GenerateHeroSpawnPosition(EnvironmentEntityView environmentEntityView)
+        public static Vector2Int WorldToGridPosition(EnvironmentEntityView environmentEntityView, Vector3 worldPosition)
         {
             if (environmentEntityView == null)
             {
@@ -55,7 +55,7 @@ namespace Barista.Client.Utils
             }
 
             Vector3Int spawnCell = environmentEntityView.GridLayout.
-                WorldToCell(environmentEntityView.HeroEntitySpawnView.transform.position);
+                WorldToCell(worldPosition);
 
             return new Vector2Int(spawnCell.x, spawnCell.y);
         }

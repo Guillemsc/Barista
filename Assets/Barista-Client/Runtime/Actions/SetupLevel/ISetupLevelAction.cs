@@ -1,5 +1,7 @@
-﻿using Barista.Shared.Entities.Environment;
+﻿using Barista.Shared.Entities.Enemy;
+using Barista.Shared.Entities.Environment;
 using Barista.Shared.Entities.Hero;
+using System.Collections.Generic;
 
 namespace Barista.Client.Actions
 {
@@ -7,7 +9,8 @@ namespace Barista.Client.Actions
     {
         void Invoke(
             EnvironmentEntity environmentEntity,
-            HeroEntity heroEntity
+            HeroEntity heroEntity,
+            IReadOnlyList<EnemyEntity> enemyEntities
             );
     }
 }

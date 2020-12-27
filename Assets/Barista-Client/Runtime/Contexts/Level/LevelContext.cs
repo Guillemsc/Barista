@@ -93,9 +93,20 @@ namespace Barista.Client.Contexts.Level
                 TilemapUtils.Vector2ToInt2(levelConfiguration.HeroSpawnPosition)
                 );
 
+            List<EnemySetup> enemySetups = new List<EnemySetup>();
+
+            foreach(Vector2Int enemySpawnPosition in levelConfiguration.EnemySpawnPositions)
+            {
+                enemySetups.Add(new EnemySetup(
+                    "test",
+                    TilemapUtils.Vector2ToInt2(enemySpawnPosition)
+                    ));
+            }
+
             return new LevelSetup(
                 testEnvironmentSetup,
-                heroSetup
+                heroSetup,
+                enemySetups
                 );
         }
 

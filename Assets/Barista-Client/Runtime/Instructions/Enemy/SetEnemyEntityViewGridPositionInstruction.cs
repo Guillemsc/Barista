@@ -1,27 +1,27 @@
 ﻿using Barista.Client.Utils;
+using Barista.Client.View.Entities.Enemy;
 using Barista.Client.View.Entities.Environment;
-using Barista.Client.View.Entities.Hero;
 using Juce.Core.Containers;
 using Juce.Core.Sequencing;
 using System;
 using UnityEngine;
 
-namespace Barista.Client.Instructions.Hero
+namespace Barista.Client.Instructions.Enemy
 {
-    public class SetHeroEntityViewGridPositionInstruction : InstantInstruction
+    public class SetEnemyEntityViewGridPositionInstruction : InstantInstruction
     {
         private readonly Lazy<EnvironmentEntityView> environment;
-        private readonly Lazy<HeroEntityView> heroEntityView;
+        private readonly Lazy<EnemyEntityView> enemyEntityView;
         private readonly Int2 gridPosition;
 
-        public SetHeroEntityViewGridPositionInstruction(
+        public SetEnemyEntityViewGridPositionInstruction(
             Lazy<EnvironmentEntityView> environment,
-            Lazy<HeroEntityView> heroEntityView,
+            Lazy<EnemyEntityView> enemyEntityView,
             Int2 gridPosition
             )
         {
             this.environment = environment;
-            this.heroEntityView = heroEntityView;
+            this.enemyEntityView = enemyEntityView;
             this.gridPosition = gridPosition;
         }
 
@@ -31,7 +31,7 @@ namespace Barista.Client.Instructions.Hero
 
             Vector3 positionVector = environment.Value.WalkabilityTilemap.GetCellCenterWorld(gridPositionVector);
 
-            heroEntityView.Value.transform.position = positionVector;
+            enemyEntityView.Value.transform.position = positionVector;
         }
     }
 }

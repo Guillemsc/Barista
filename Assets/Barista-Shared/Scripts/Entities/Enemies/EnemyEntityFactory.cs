@@ -14,9 +14,9 @@ namespace Barista.Shared.Entities.Enemy
 
         public EnemyEntity Create(EnemySetup enemySetup)
         {
-            EnemyEntity heroEntity = new EnemyEntity(enemySetup.TypeId, idGenerator.Generate());
+            EnemyEntity enemyEntity = new EnemyEntity(enemySetup.TypeId, idGenerator.Generate());
 
-            return heroEntity;
+            return enemyEntity;
         }
     }
 }

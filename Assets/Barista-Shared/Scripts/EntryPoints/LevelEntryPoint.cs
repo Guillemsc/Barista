@@ -31,7 +31,7 @@ namespace Barista.Shared.EntryPoints
             HeroEntityRepository heroEntityRepository = new HeroEntityRepository(heroEntityFactory);
             EnemyEntityRepository enemyEntityRepository = new EnemyEntityRepository(enemyEntityFactory);
 
-            PathfindingFactory pathfindingFactory = new PathfindingFactory(levelSetup.EnvironmentConfiguration.WalkabilityGrid);
+            PathfindingFactory pathfindingFactory = new PathfindingFactory(levelSetup.EnvironmentSetup.WalkabilityGrid);
 
             LevelState levelState = new LevelState();
 
@@ -41,6 +41,7 @@ namespace Barista.Shared.EntryPoints
                     levelSetup,
                     environmentEntityRepository,
                     heroEntityRepository,
+                    enemyEntityRepository,
                     levelState
                     ),
 

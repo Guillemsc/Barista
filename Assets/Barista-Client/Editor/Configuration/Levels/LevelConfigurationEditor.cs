@@ -2,6 +2,7 @@
 using Barista.Client.Constants;
 using Barista.Client.Libraries;
 using Barista.Client.Utils;
+using Barista.Client.View.Spawns;
 using Juce.CoreUnity.Assets;
 using Juce.CoreUnity.Scenes;
 using System.Collections.Generic;
@@ -161,7 +162,16 @@ namespace Barista.Client.Configuration.Levels
 
                 targetData.EnvironmentTypeId = environmentItem.TypeId;
                 targetData.WalkabilityGrid = EnvironmentUtils.GenerateWalkability(environmentItem.Prefab);
-                targetData.HeroSpawnPosition = EnvironmentUtils.GenerateHeroSpawnPosition(environmentItem.Prefab);
+                targetData.HeroSpawnPosition = EnvironmentUtils.WorldToGridPosition(environmentItem.Prefab, 
+                    environmentItem.Prefab.HeroEntitySpawnView.transform.position);
+
+                targetData.EnemySpawnPositions.Clear();
+
+                foreach(EnemyEntitySpawnView enemySpawn in environmentItem.Prefab.EnemyEntitySpawnViews)
+                {
+                    targetData.EnemySpawnPositions.Add(EnvironmentUtils.WorldToGridPosition(environmentItem.Prefab,
+                        enemySpawn.transform.position));
+                }
             }
 
             EditorUtility.SetDirty(targetData);

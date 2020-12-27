@@ -4,16 +4,19 @@ namespace Barista.Shared.Configuration
 {
     public class LevelSetup
     {
-        public EnvironmentSetup EnvironmentConfiguration { get; }
-        public HeroSetup HeroConfiguration { get; }
+        public EnvironmentSetup EnvironmentSetup { get; }
+        public HeroSetup HeroSetup { get; }
+        public IReadOnlyList<EnemySetup> EnemySetups { get; }
 
         public LevelSetup(
-            EnvironmentSetup environmentConfiguration,
-            HeroSetup heroConfiguration
+            EnvironmentSetup environmentSetup,
+            HeroSetup heroSetup,
+            IReadOnlyList<EnemySetup> enemySetups
             )
         {
-            EnvironmentConfiguration = environmentConfiguration;
-            HeroConfiguration = heroConfiguration;
+            EnvironmentSetup = environmentSetup;
+            HeroSetup = heroSetup;
+            EnemySetups = enemySetups;
         }
     }
 }

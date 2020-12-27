@@ -1,9 +1,11 @@
 ﻿using Barista.Shared.Configuration;
+using Barista.Shared.Entities.Enemy;
 using Barista.Shared.Entities.Environment;
 using Barista.Shared.Entities.Hero;
 using Barista.Shared.EntryPoints;
 using Barista.Shared.Events;
 using Juce.Core.Events;
+using System.Collections.Generic;
 
 namespace Barista.Shared.Actions
 {
@@ -13,6 +15,7 @@ namespace Barista.Shared.Actions
         private readonly LevelSetup levelSetup;
         private readonly EnvironmentEntityRepository environmentEntityRepository;
         private readonly HeroEntityRepository heroEntityRepository;
+        private readonly EnemyEntityRepository enemyEntityRepository;
         private readonly LevelState levelState;
 
         public SetupLevelAction(
@@ -20,6 +23,7 @@ namespace Barista.Shared.Actions
             LevelSetup levelConfiguration,
             EnvironmentEntityRepository environmentEntityRepository,
             HeroEntityRepository heroEntityRepository,
+            EnemyEntityRepository enemyEntityRepository,
             LevelState levelState
             )
         {
@@ -27,21 +31,32 @@ namespace Barista.Shared.Actions
             this.levelSetup = levelConfiguration;
             this.environmentEntityRepository = environmentEntityRepository;
             this.heroEntityRepository = heroEntityRepository;
+            this.enemyEntityRepository = enemyEntityRepository;
             this.levelState = levelState;
         }
 
         public void Invoke()
         {
-            EnvironmentEntity environmentEntity = environmentEntityRepository.Spawn(levelSetup.EnvironmentConfiguration);
-            levelState.LoadedEnvironmentId = environmentEntity.InstanceId;
+            EnvironmentEntity loadedEnvironmentEntity = environmentEntityRepository.Spawn(levelSetup.EnvironmentSetup);
+            levelState.LoadedEnvironmentId = loadedEnvironmentEntity.InstanceId;
 
-            HeroEntity heroEntity = heroEntityRepository.Spawn(levelSetup.HeroConfiguration);
-            heroEntity.GridPosition = levelSetup.HeroConfiguration.SpawnPosition;
-            levelState.LoadedHeroId = heroEntity.InstanceId;
+            HeroEntity spawnedHeroEntity = heroEntityRepository.Spawn(levelSetup.HeroSetup);
+            spawnedHeroEntity.GridPosition = levelSetup.HeroSetup.SpawnPosition;
+            levelState.LoadedHeroId = spawnedHeroEntity.InstanceId;
+
+            List<EnemyEntity> spawnedEnemyEntities = new List<EnemyEntity>();
+
+            foreach (EnemySetup enemySetup in levelSetup.EnemySetups)
+            {
+                EnemyEntity enemyEntity = enemyEntityRepository.Spawn(enemySetup);
+                enemyEntity.GridPosition = enemySetup.SpawnPosition;
+                spawnedEnemyEntities.Add(enemyEntity);
+            }
 
             eventDispatcher.Dispatch(new SetupLevelOutEvent(
-                environmentEntity, 
-                heroEntity
+                loadedEnvironmentEntity, 
+                spawnedHeroEntity,
+                spawnedEnemyEntities
                 ));
         }
     }

@@ -16,6 +16,7 @@ namespace Barista.Client.View.Entities.Environment
 
         [Header("Spawns")]
         [SerializeField] private HeroEntitySpawnView heroEntitySpawnView = default;
+        [SerializeField] private List<EnemyEntitySpawnView> enemyEntitySpawnViews = default;
 
         [Header("General")]
         [SerializeField] private List<Component> toDisable = default;
@@ -26,6 +27,7 @@ namespace Barista.Client.View.Entities.Environment
         public GridLayout GridLayout => gridLayout;
         public Tilemap WalkabilityTilemap => walkabilityTilemap;
         public HeroEntitySpawnView HeroEntitySpawnView => heroEntitySpawnView;
+        public IReadOnlyList<EnemyEntitySpawnView> EnemyEntitySpawnViews => enemyEntitySpawnViews;
 
         private void Awake()
         {

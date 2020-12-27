@@ -1,5 +1,7 @@
-﻿using Barista.Shared.Entities.Environment;
+﻿using Barista.Shared.Entities.Enemy;
+using Barista.Shared.Entities.Environment;
 using Barista.Shared.Entities.Hero;
+using System.Collections.Generic;
 
 namespace Barista.Shared.Events
 {
@@ -7,14 +9,17 @@ namespace Barista.Shared.Events
     {
         public EnvironmentEntity EnvironmentEntity { get; }
         public HeroEntity HeroEntity { get; }
+        public IReadOnlyList<EnemyEntity> EnemyEntities { get; }
 
         public SetupLevelOutEvent(
             EnvironmentEntity environmentEntity,
-            HeroEntity heroEntity
+            HeroEntity heroEntity,
+            IReadOnlyList<EnemyEntity> enemyEntities
             )
         {
             EnvironmentEntity = environmentEntity;
             HeroEntity = heroEntity;
+            EnemyEntities = enemyEntities;
         }
     }
 }
