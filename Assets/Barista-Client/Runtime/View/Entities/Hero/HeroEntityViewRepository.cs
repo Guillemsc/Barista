@@ -59,5 +59,10 @@ namespace Barista.Client.View.Entities.Hero
         {
             return new Lazy<HeroEntityView>(() => { return Get(instanceId); });
         }
+
+        public Lazy<IMovableEntityView> GetLazyAsMovable(int instanceId)
+        {
+            return new Lazy<IMovableEntityView>(() => { return Get(instanceId); });
+        }
     }
 }

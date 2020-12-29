@@ -9,9 +9,11 @@ namespace Barista.Client.References.Level
         [SerializeField] private EnvironmentsLibrary environmentsLibrary = default;
         [SerializeField] private HeroesLibrary heroesLibrary = default;
         [SerializeField] private EnemiesLibrary enemiesLibrary = default;
+        [SerializeField] private ItemsLibrary itemsLibrary = default;
 
         public EnvironmentsLibrary EnvironmentsLibrary => environmentsLibrary;
         public HeroesLibrary HeroesLibrary => heroesLibrary;
         public EnemiesLibrary EnemiesLibrary => enemiesLibrary;
+        public ItemsLibrary ItemsLibrary => itemsLibrary;
     }
 }

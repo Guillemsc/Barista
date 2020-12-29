@@ -165,7 +165,7 @@ namespace Barista.Client.Configuration.Levels
                 targetData.HeroSpawnPosition = EnvironmentUtils.WorldToGridPosition(environmentItem.Prefab, 
                     environmentItem.Prefab.HeroEntitySpawnView.transform.position);
 
-                targetData.EnemySpawnPositions.Clear();
+                targetData.EnemySpawnPositions = new List<Vector2Int>();
 
                 foreach(EnemyEntitySpawnView enemySpawn in environmentItem.Prefab.EnemyEntitySpawnViews)
                 {

@@ -2,6 +2,7 @@
 using Juce.Core.Architecture;
 using Juce.Core.Contracts;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Barista.Shared.Entities.Enemy
 {
@@ -10,6 +11,8 @@ namespace Barista.Shared.Entities.Enemy
         private readonly Dictionary<int, EnemyEntity> elements = new Dictionary<int, EnemyEntity>();
 
         private readonly EnemyEntityFactory enemyEntityFactory;
+
+        public IReadOnlyList<EnemyEntity> Elements => elements.Values.ToList();
 
         public EnemyEntityRepository(EnemyEntityFactory enemyEntityFactory)
         {

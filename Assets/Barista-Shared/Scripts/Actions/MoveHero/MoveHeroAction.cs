@@ -14,6 +14,7 @@ namespace Barista.Shared.Actions
     public class MoveHeroAction : IMoveHeroAction
     {
         private readonly IEventDispatcher eventDispatcher;
+        private readonly TurnLogic turnLogic;
         private readonly EnvironmentEntityRepository environmentEntityRepository;
         private readonly HeroEntityRepository heroEntityRepository;
         private readonly PathfindingFactory pathfindingFactory;
@@ -21,6 +22,7 @@ namespace Barista.Shared.Actions
 
         public MoveHeroAction(
             IEventDispatcher eventDispatcher,
+            TurnLogic turnLogic,
             EnvironmentEntityRepository environmentEntityRepository,
             HeroEntityRepository heroEntityRepository,
             PathfindingFactory pathfindingFactory,
@@ -28,6 +30,7 @@ namespace Barista.Shared.Actions
             )
         {
             this.eventDispatcher = eventDispatcher;
+            this.turnLogic = turnLogic;
             this.environmentEntityRepository = environmentEntityRepository;
             this.heroEntityRepository = heroEntityRepository;
             this.pathfindingFactory = pathfindingFactory;
@@ -46,11 +49,13 @@ namespace Barista.Shared.Actions
                 return;
             }
 
-            TurnLogic.StartTurn(eventDispatcher);
+            turnLogic.StartTurn();
 
             HeroMovementLogic.MoveHero(eventDispatcher, pathfindingFactory, environmentEntity, heroEntity, direction);
 
-            TurnLogic.EndTurn(eventDispatcher);
+            turnLogic.TickTurn();
+
+            turnLogic.EndTurn();
         }
     }
 }

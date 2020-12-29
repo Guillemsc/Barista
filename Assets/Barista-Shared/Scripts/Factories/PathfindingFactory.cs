@@ -1,7 +1,8 @@
-﻿using Juce.Core.Containers;
+﻿using Barista.Shared.Entities.Enemy;
+using Barista.Shared.Entities.Hero;
+using Juce.Core.Containers;
 using Juce.Core.Pathfinding;
 using Juce.Core.Pathfinding.Algorithms;
-using System;
 using System.Collections.Generic;
 
 namespace Barista.Shared.Factories
@@ -9,17 +10,26 @@ namespace Barista.Shared.Factories
     public class PathfindingFactory
     {
         private readonly IReadOnlyList<Int2> walkabilityGrid;
+        private readonly HeroEntityRepository heroEntityRepository;
+        private readonly EnemyEntityRepository enemyEntityRepository;
 
-        private Int2 origin;
         private Int2 destination;
 
-        public PathfindingFactory(IReadOnlyList<Int2> walkabilityGrid)
+        public PathfindingFactory(
+            IReadOnlyList<Int2> walkabilityGrid,
+            HeroEntityRepository heroEntityRepository,
+            EnemyEntityRepository enemyEntityRepository
+            )
         {
             this.walkabilityGrid = walkabilityGrid;
+            this.heroEntityRepository = heroEntityRepository;
+            this.enemyEntityRepository = enemyEntityRepository;
         }
 
         public IReadOnlyList<Int2> Create(Int2 origin, Int2 destination)
         {
+            this.destination = destination;
+
             AStarPathfindingAlgorithm<Int2> algorithm = new AStarPathfindingAlgorithm<Int2>(
                 GetChilds,
                 GetPriority,
@@ -42,29 +52,22 @@ namespace Barista.Shared.Factories
         {
             List<Int2> ret = new List<Int2>();
 
-            Int2 upDirection = new Int2(parent.X, parent.Y + 1);
-            Int2 downDirection = new Int2(parent.X, parent.Y - 1);
-            Int2 leftDirection = new Int2(parent.X - 1, parent.Y);
-            Int2 rightDirection = new Int2(parent.X + 1, parent.Y);
+            List<Int2> toCheck = new List<Int2>(4);
 
-            if(WalkabilityGridContains(upDirection))
-            {
-                ret.Add(upDirection);
-            }
+            toCheck.Add(new Int2(parent.X, parent.Y + 1));
+            toCheck.Add(new Int2(parent.X, parent.Y - 1));
+            toCheck.Add(new Int2(parent.X - 1, parent.Y));
+            toCheck.Add(new Int2(parent.X + 1, parent.Y));
 
-            if (WalkabilityGridContains(downDirection))
+            foreach(Int2 positionToCheck in toCheck)
             {
-                ret.Add(downDirection);
-            }
-
-            if (WalkabilityGridContains(leftDirection))
-            {
-                ret.Add(leftDirection);
-            }
-
-            if (WalkabilityGridContains(rightDirection))
-            {
-                ret.Add(rightDirection);
+                if (WalkabilityGridContains(positionToCheck))
+                {
+                    if (!IsUsedByEntity(positionToCheck))
+                    {
+                        ret.Add(positionToCheck);
+                    }
+                }
             }
 
             return ret;
@@ -72,7 +75,7 @@ namespace Barista.Shared.Factories
 
         private float GetPriority(Int2 node)
         {
-            return 0;
+            return -node.Distance(destination);
         }
 
         private PathfindingPath<Int2> GenerateResult(AStarPathfindingResult resultType, PathfindingNode<Int2> endNode)
@@ -98,6 +101,27 @@ namespace Barista.Shared.Factories
             foreach(Int2 walkablePosition in walkabilityGrid)
             {
                 if(walkablePosition.Equals(position))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsUsedByEntity(Int2 position)
+        {
+            foreach(HeroEntity heroEntity in heroEntityRepository.Elements)
+            {
+                if(heroEntity.GridPosition.Equals(position))
+                {
+                    return true;
+                }
+            }
+
+            foreach (EnemyEntity enemyEntity in enemyEntityRepository.Elements)
+            {
+                if (enemyEntity.GridPosition.Equals(position))
                 {
                     return true;
                 }

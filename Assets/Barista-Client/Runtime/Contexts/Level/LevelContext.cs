@@ -50,7 +50,8 @@ namespace Barista.Client.Contexts.Level
                 eventDispatcher,
                 levelContextReferences.LevelLibrariesReferences.EnvironmentsLibrary,
                 levelContextReferences.LevelLibrariesReferences.HeroesLibrary,
-                levelContextReferences.LevelLibrariesReferences.EnemiesLibrary
+                levelContextReferences.LevelLibrariesReferences.EnemiesLibrary,
+                levelContextReferences.LevelLibrariesReferences.ItemsLibrary
                 );
 
             levelViewEntryPoint.Execute();

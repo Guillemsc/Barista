@@ -10,6 +10,7 @@ namespace Barista.Client.View.Entities.Environment
     public class EnvironmentEntityView : MonoBehaviour, IEntityView<string>
     {
         [Header("Setup")]
+        [SerializeField] private GameObject spawnsParent = default;
         [SerializeField] private GridLayout gridLayout = default;
         [SerializeField] private Tilemap walkabilityTilemap = default;
         [SerializeField] private TilemapRenderer walkabilityTilemapRenderer = default;
@@ -49,6 +50,8 @@ namespace Barista.Client.View.Entities.Environment
         private void DisableGameObjects()
         {
             walkabilityTilemapRenderer.enabled = false;
+
+            spawnsParent.gameObject.SetActive(false);
         }
     }
 }

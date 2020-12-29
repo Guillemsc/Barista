@@ -41,7 +41,7 @@ namespace Barista.Shared.Actions
             levelState.LoadedEnvironmentId = loadedEnvironmentEntity.InstanceId;
 
             HeroEntity spawnedHeroEntity = heroEntityRepository.Spawn(levelSetup.HeroSetup);
-            spawnedHeroEntity.GridPosition = levelSetup.HeroSetup.SpawnPosition;
+            spawnedHeroEntity.SetGridPosition(levelSetup.HeroSetup.SpawnPosition);
             levelState.LoadedHeroId = spawnedHeroEntity.InstanceId;
 
             List<EnemyEntity> spawnedEnemyEntities = new List<EnemyEntity>();

@@ -1,4 +1,4 @@
-﻿using Barista.Client.Instructions.Hero;
+﻿using Barista.Client.Instructions.Entity;
 using Barista.Client.Timelines;
 using Barista.Client.View.Entities.Environment;
 using Barista.Client.View.Entities.Hero;
@@ -31,9 +31,9 @@ namespace Barista.Client.Actions
         {
             InstructionsSequence sequence = new InstructionsSequence();
 
-            sequence.Append(new MoveHeroEntityViewAlongPathInstruction(
+            sequence.Append(new MoveEntityViewAlongPathInstruction(
                 environmentEntityViewRepository.GetLazy(environmentEntity.InstanceId),
-                heroEntityViewRepository.GetLazy(heroEntity.InstanceId),
+                heroEntityViewRepository.GetLazyAsMovable(heroEntity.InstanceId),
                 path
                 ));
 

@@ -9,6 +9,7 @@ using Barista.Client.Timelines;
 using Barista.Client.View.Entities.Enemy;
 using Barista.Client.View.Entities.Environment;
 using Barista.Client.View.Entities.Hero;
+using Barista.Client.View.Entities.Item;
 using Barista.Shared.Events;
 using Juce.Core.Direction;
 using Juce.Core.EntryPoint;
@@ -28,13 +29,15 @@ namespace Barista.Client.EntryPoints
         private readonly EnvironmentsLibrary environmentsLibrary;
         private readonly HeroesLibrary heroesLibrary;
         private readonly EnemiesLibrary enemiesLibrary;
+        private readonly ItemsLibrary itemsLibrary;
 
         public LevelViewEntryPoint(
             LevelViewEntryPointSettings settings,
             IEventDispatcher eventDispatcher,
             EnvironmentsLibrary environmentsLibrary,
             HeroesLibrary heroesLibrary,
-            EnemiesLibrary enemiesLibrary
+            EnemiesLibrary enemiesLibrary,
+            ItemsLibrary itemsLibrary
             )
         {
             this.settings = settings;
@@ -42,6 +45,7 @@ namespace Barista.Client.EntryPoints
             this.environmentsLibrary = environmentsLibrary;
             this.heroesLibrary = heroesLibrary;
             this.enemiesLibrary = enemiesLibrary;
+            this.itemsLibrary = itemsLibrary;
         }
 
         protected override void OnExecute()
@@ -86,6 +90,10 @@ namespace Barista.Client.EntryPoints
                 enemiesLibrary
                 );
 
+            IItemEntityViewFactory itemEntityViewFactory = new ItemEntityViewFactory(
+                itemsLibrary
+                );
+
             // Repositories
             EnvironmentEntityViewRepository environmentEntityViewRepository = new EnvironmentEntityViewRepository(
                 environmentEntityViewFactory
@@ -97,6 +105,10 @@ namespace Barista.Client.EntryPoints
 
             EnemyEntityViewRepository enemyEntityViewRepository = new EnemyEntityViewRepository(
                 enemyEntityViewFactory
+                );
+
+            ItemEntityViewRepository itemEntityViewRepository = new ItemEntityViewRepository(
+                itemEntityViewFactory
                 );
 
             LevelTimelines levelTimelines = new LevelTimelines();
@@ -137,6 +149,12 @@ namespace Barista.Client.EntryPoints
                     levelTimelines,
                     environmentEntityViewRepository,
                     heroEntityViewRepository
+                    ),
+
+                new EnemyMovedAction(
+                    levelTimelines,
+                    environmentEntityViewRepository,
+                    enemyEntityViewRepository
                     )
                 );
 
@@ -193,6 +211,15 @@ namespace Barista.Client.EntryPoints
                 levelActionsRepository.HeroMovedAction.Invoke(
                     ev.EnvironmentEntity,
                     ev.HeroEntity, 
+                    ev.Path
+                    );
+            });
+
+            eventDispatcher.Subscribe((EnemyMovedOutEvent ev) =>
+            {
+                levelActionsRepository.EnemyMovedAction.Invoke(
+                    ev.EnvironmentEntity,
+                    ev.EnemyEntity,
                     ev.Path
                     );
             });

@@ -5,6 +5,6 @@ namespace Barista.Shared.Entities
 {
     public interface IMapEntity
     {
-        Int2 GridPosition { get; set; }
+        Int2 GridPosition { get; }
     }
 }

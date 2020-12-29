@@ -3,8 +3,11 @@ using Barista.Shared.Configuration;
 using Barista.Shared.Entities.Enemy;
 using Barista.Shared.Entities.Environment;
 using Barista.Shared.Entities.Hero;
+using Barista.Shared.Entities.Item;
 using Barista.Shared.Events;
 using Barista.Shared.Factories;
+using Barista.Shared.Logic;
+using Barista.Shared.Logic.EnemyBrain;
 using Juce.Core.EntryPoint;
 using Juce.Core.Events;
 using Juce.Core.Id;
@@ -23,17 +26,42 @@ namespace Barista.Shared.EntryPoints
 
             IIdGenerator idGenerator = new IncrementalIdGenerator();
 
+            EnemyBrainFactory enemyBrainFactory = new EnemyBrainFactory();
+
             EnvironmentEntityFactory environmentEntityFactory = new EnvironmentEntityFactory(idGenerator);
             HeroEntityFactory heroEntityFactory = new HeroEntityFactory(idGenerator);
-            EnemyEntityFactory enemyEntityFactory = new EnemyEntityFactory(idGenerator);
+            EnemyEntityFactory enemyEntityFactory = new EnemyEntityFactory(idGenerator, enemyBrainFactory);
+            ItemEntityFactory itemEntityFactory = new ItemEntityFactory(idGenerator);
 
             EnvironmentEntityRepository environmentEntityRepository = new EnvironmentEntityRepository(environmentEntityFactory);
             HeroEntityRepository heroEntityRepository = new HeroEntityRepository(heroEntityFactory);
             EnemyEntityRepository enemyEntityRepository = new EnemyEntityRepository(enemyEntityFactory);
+            ItemEntityRepository itemEntityRepository = new ItemEntityRepository(itemEntityFactory);
 
-            PathfindingFactory pathfindingFactory = new PathfindingFactory(levelSetup.EnvironmentSetup.WalkabilityGrid);
+            PathfindingFactory pathfindingFactory = new PathfindingFactory(
+                levelSetup.EnvironmentSetup.WalkabilityGrid,
+                heroEntityRepository,
+                enemyEntityRepository
+                );
 
             LevelState levelState = new LevelState();
+
+            enemyBrainFactory.Init(
+                environmentEntityRepository,
+                heroEntityRepository,
+                enemyEntityRepository,
+                pathfindingFactory,
+                levelState
+                );
+
+            TurnLogic turnLogic = new TurnLogic(
+                eventDispatcher,
+                environmentEntityRepository,
+                heroEntityRepository,
+                enemyEntityRepository,
+                pathfindingFactory,
+                levelState
+                );
 
             levelActionsRepository = new LevelActionsRepository(
                 new SetupLevelAction(
@@ -57,6 +85,7 @@ namespace Barista.Shared.EntryPoints
 
                 new MoveHeroAction(
                     eventDispatcher,
+                    turnLogic,
                     environmentEntityRepository,
                     heroEntityRepository,
                     pathfindingFactory,

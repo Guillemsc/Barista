@@ -58,5 +58,10 @@ namespace Barista.Client.View.Entities.Enemy
         {
             return new Lazy<EnemyEntityView>(() => { return Get(instanceId); });
         }
+
+        public Lazy<IMovableEntityView> GetLazyAsMovable(int instanceId)
+        {
+            return new Lazy<IMovableEntityView>(() => { return Get(instanceId); });
+        }
     }
 }
