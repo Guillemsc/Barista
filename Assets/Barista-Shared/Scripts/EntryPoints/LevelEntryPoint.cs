@@ -5,9 +5,10 @@ using Barista.Shared.Entities.Environment;
 using Barista.Shared.Entities.Hero;
 using Barista.Shared.Entities.Item;
 using Barista.Shared.Events;
-using Barista.Shared.Factories;
 using Barista.Shared.Logic;
 using Barista.Shared.Logic.EnemyBrain;
+using Barista.Shared.Logic.Items;
+using Barista.Shared.Logic.Pathfinding;
 using Juce.Core.EntryPoint;
 using Juce.Core.Events;
 using Juce.Core.Id;
@@ -27,6 +28,7 @@ namespace Barista.Shared.EntryPoints
             IIdGenerator idGenerator = new IncrementalIdGenerator();
 
             EnemyBrainFactory enemyBrainFactory = new EnemyBrainFactory();
+            ItemFactory itemFactory = new ItemFactory();
 
             EnvironmentEntityFactory environmentEntityFactory = new EnvironmentEntityFactory(idGenerator);
             HeroEntityFactory heroEntityFactory = new HeroEntityFactory(idGenerator);
@@ -54,12 +56,14 @@ namespace Barista.Shared.EntryPoints
                 levelState
                 );
 
-            TurnLogic turnLogic = new TurnLogic(
+            LevelLogic levelLogic = new LevelLogic(
                 eventDispatcher,
                 environmentEntityRepository,
                 heroEntityRepository,
                 enemyEntityRepository,
+                itemEntityRepository,
                 pathfindingFactory,
+                itemFactory,
                 levelState
                 );
 
@@ -70,6 +74,7 @@ namespace Barista.Shared.EntryPoints
                     environmentEntityRepository,
                     heroEntityRepository,
                     enemyEntityRepository,
+                    itemEntityRepository,
                     levelState
                     ),
 
@@ -84,11 +89,8 @@ namespace Barista.Shared.EntryPoints
                     ),
 
                 new MoveHeroAction(
-                    eventDispatcher,
-                    turnLogic,
-                    environmentEntityRepository,
+                    levelLogic,
                     heroEntityRepository,
-                    pathfindingFactory,
                     levelState
                     )
                 );

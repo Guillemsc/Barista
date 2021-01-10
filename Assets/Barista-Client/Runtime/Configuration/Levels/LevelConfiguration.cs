@@ -11,5 +11,6 @@ namespace Barista.Client.Configuration.Levels
         [SerializeField] public List<Vector2Int> WalkabilityGrid { get; set; }
         [SerializeField] public Vector2Int HeroSpawnPosition { get; set; }
         [SerializeField] public List<Vector2Int> EnemySpawnPositions { get; set; }
+        [SerializeField] public List<Vector2Int> ItemSpawnPositions { get; set; }
     }
 }

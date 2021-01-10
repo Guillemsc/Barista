@@ -2,7 +2,7 @@
 using Barista.Shared.Entities.Environment;
 using Barista.Shared.Entities.Hero;
 using Barista.Shared.EntryPoints;
-using Barista.Shared.Factories;
+using Barista.Shared.Logic.Pathfinding;
 using System;
 
 namespace Barista.Shared.Logic.EnemyBrain

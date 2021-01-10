@@ -3,6 +3,7 @@ using Barista.Client.EntryPoints;
 using Barista.Client.Utils;
 using Barista.Shared.Configuration;
 using Barista.Shared.EntryPoints;
+using Barista.Shared.Logic.Items;
 using Juce.Core.Containers;
 using Juce.Core.Events;
 using Juce.CoreUnity.Contexts;
@@ -96,7 +97,7 @@ namespace Barista.Client.Contexts.Level
 
             List<EnemySetup> enemySetups = new List<EnemySetup>();
 
-            foreach(Vector2Int enemySpawnPosition in levelConfiguration.EnemySpawnPositions)
+            foreach (Vector2Int enemySpawnPosition in levelConfiguration.EnemySpawnPositions)
             {
                 enemySetups.Add(new EnemySetup(
                     "test",
@@ -104,10 +105,21 @@ namespace Barista.Client.Contexts.Level
                     ));
             }
 
+            List<ItemSetup> itemSetups = new List<ItemSetup>();
+
+            foreach (Vector2Int itemSpawnPosition in levelConfiguration.ItemSpawnPositions)
+            {
+                itemSetups.Add(new ItemSetup(
+                    ItemType.Sword,
+                    TilemapUtils.Vector2ToInt2(itemSpawnPosition)
+                    ));
+            }
+
             return new LevelSetup(
                 testEnvironmentSetup,
                 heroSetup,
-                enemySetups
+                enemySetups,
+                itemSetups
                 );
         }
 

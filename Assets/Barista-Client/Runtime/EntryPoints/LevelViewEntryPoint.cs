@@ -17,8 +17,6 @@ using Juce.Core.Events;
 using Juce.CoreUnity.Contexts;
 using Juce.CoreUnity.Service;
 using Juce.CoreUnity.Services;
-using UnityEngine;
-using static UnityEngine.InputSystem.InputAction;
 
 namespace Barista.Client.EntryPoints
 {
@@ -71,11 +69,12 @@ namespace Barista.Client.EntryPoints
             // Ui references
             LevelUIContextReferences levelUIContextReferences = levelUIContext.LevelUIContextReferences;
             LevelUICanvases levelUICanvases = levelUIContextReferences.LevelUICanvases;
-            LevelUIViewModelsReferences levelUIViewModelsReferences = levelUIContextReferences.LevelUIViewModelsReferences;
+            LevelUIReferences levelUIReferences = levelUIContextReferences.LevelUIReferences;
 
             // Signals
 
             // Ui
+            levelUIReferences.ItemsViewUI.Init(itemsLibrary, levelUICanvases.MainCanvas);
 
             // Factories
             IEnvironmentEntityViewFactory environmentEntityViewFactory = new EnvironmentEntityViewFactory(
@@ -122,6 +121,7 @@ namespace Barista.Client.EntryPoints
                     environmentEntityViewRepository,
                     heroEntityViewRepository,
                     enemyEntityViewRepository,
+                    itemEntityViewRepository,
                     mainInput
                     ),
 
@@ -155,6 +155,12 @@ namespace Barista.Client.EntryPoints
                     levelTimelines,
                     environmentEntityViewRepository,
                     enemyEntityViewRepository
+                    ),
+
+                new HeroGrabbedItemAction(
+                    levelTimelines,
+                    itemEntityViewRepository,
+                    levelUIReferences.ItemsViewUI
                     )
                 );
 
@@ -180,7 +186,8 @@ namespace Barista.Client.EntryPoints
                 levelActionsRepository.SetupLevelAction.Invoke(
                     ev.EnvironmentEntity,
                     ev.HeroEntity,
-                    ev.EnemyEntities
+                    ev.EnemyEntities,
+                    ev.ItemEntities
                     );
             });
 
@@ -221,6 +228,15 @@ namespace Barista.Client.EntryPoints
                     ev.EnvironmentEntity,
                     ev.EnemyEntity,
                     ev.Path
+                    );
+            });
+
+            eventDispatcher.Subscribe((HeroGrabbedItemOutEvent ev) =>
+            {
+                levelActionsRepository.HeroGrabbedItemAction.Invoke(
+                    ev.HeroEntity,
+                    ev.ItemEntity,
+                    ev.TotalStacks
                     );
             });
 

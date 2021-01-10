@@ -1,30 +1,40 @@
 ﻿using Barista.Shared.Entities.Enemy;
 using Barista.Shared.Entities.Environment;
 using Barista.Shared.Entities.Hero;
+using Barista.Shared.Entities.Item;
 using Barista.Shared.EntryPoints;
 using Barista.Shared.Events;
-using Barista.Shared.Factories;
 using Barista.Shared.Logic.EnemyActions;
+using Barista.Shared.Logic.Items;
+using Barista.Shared.Logic.Pathfinding;
 using Juce.Core.Events;
 using System;
 
 namespace Barista.Shared.Logic
 {
-    public class TurnLogic
+    public class LevelLogic
     {
         private readonly IEventDispatcher eventDispatcher;
         private readonly EnvironmentEntityRepository environmentEntityRepository;
         private readonly HeroEntityRepository heroEntityRepository;
         private readonly EnemyEntityRepository enemyEntityRepository;
+        private readonly ItemEntityRepository itemEntityRepository;
         private readonly PathfindingFactory pathfindingFactory;
+        private readonly ItemFactory itemFactory;
         private readonly LevelState levelState;
 
-        public TurnLogic(
+        public HeroMovementLogic HeroMovementLogic { get; }
+        public EnemyMovementLogic EnemyMovementLogic { get; }
+        public HeroGrabItemsLogic HeroGrabItemsLogic { get; }
+
+        public LevelLogic(
             IEventDispatcher eventDispatcher,
             EnvironmentEntityRepository environmentEntityRepository,
             HeroEntityRepository heroEntityRepository,
             EnemyEntityRepository enemyEntityRepository,
+            ItemEntityRepository itemEntityRepository,
             PathfindingFactory pathfindingFactory,
+            ItemFactory itemFactory,
             LevelState levelState
             )
         {
@@ -33,7 +43,29 @@ namespace Barista.Shared.Logic
             this.heroEntityRepository = heroEntityRepository;
             this.enemyEntityRepository = enemyEntityRepository;
             this.pathfindingFactory = pathfindingFactory;
+            this.itemFactory = itemFactory;
             this.levelState = levelState;
+
+            HeroMovementLogic = new HeroMovementLogic(
+                this,
+                eventDispatcher,
+                environmentEntityRepository,
+                pathfindingFactory,
+                levelState
+                );
+
+            EnemyMovementLogic = new EnemyMovementLogic(
+                eventDispatcher,
+                environmentEntityRepository,
+                pathfindingFactory,
+                levelState
+                );
+
+            HeroGrabItemsLogic = new HeroGrabItemsLogic(
+                eventDispatcher,
+                itemEntityRepository,
+                itemFactory
+                );
         }
 
         public void StartTurn()
@@ -43,9 +75,6 @@ namespace Barista.Shared.Logic
 
         public void TickTurn()
         {
-            EnvironmentEntity environmentEntity = environmentEntityRepository.Get(levelState.LoadedEnvironmentId);
-            HeroEntity heroEntity = heroEntityRepository.Get(levelState.LoadedHeroId);
-
             foreach(EnemyEntity enemyEntity in enemyEntityRepository.Elements)
             {
                 IEnemyAction enemyAction = enemyEntity.EnemyBrain.GenerateNextEnemyAction(enemyEntity);
@@ -58,14 +87,11 @@ namespace Barista.Shared.Logic
                         }
                         break;
 
-                    case MoveTowardsEntityEnemyAction action:
+                    case MoveTowardsHeroEnemyAction action:
                         {
-                            EnemiesMovementLogic.MoveEnemyTowardsEntity(
-                                eventDispatcher,
-                                pathfindingFactory,
-                                environmentEntity,
+                            EnemyMovementLogic.MoveEnemyTowardsHero(
                                 enemyEntity,
-                                heroEntity,
+                                action.HeroEntityToReach,
                                 1
                                 );
                         }

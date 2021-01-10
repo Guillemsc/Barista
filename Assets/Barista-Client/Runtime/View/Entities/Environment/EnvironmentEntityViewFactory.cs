@@ -27,7 +27,7 @@ namespace Barista.Client.View.Entities.Environment
                     $"{instanceId} was null on {nameof(EnvironmentEntityViewFactory)}");
             }
 
-            EnvironmentEntityView newEnvironmentEntityView = environmentEntityView.gameObject.InstantiateAndGetComponent<EnvironmentEntityView>();
+            EnvironmentEntityView newEnvironmentEntityView = environmentEntityView.InstantiateGameObjectAndGet();
 
             newEnvironmentEntityView.Construct(typeId, instanceId);
 

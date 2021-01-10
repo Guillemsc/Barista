@@ -9,6 +9,7 @@
         public IEndTurnAction EndTurnAction { get; }
         public IHeroMovedAction HeroMovedAction { get; }
         public IEnemyMovedAction EnemyMovedAction { get; }
+        public IHeroGrabbedItemAction HeroGrabbedItemAction { get; }
 
         public LevelActionsRepository(
             ISetupLevelAction setupLevelAction,
@@ -17,7 +18,8 @@
             IStartTurnAction startTurnAction,
             IEndTurnAction endTurnAction,
             IHeroMovedAction heroMovedAction,
-            IEnemyMovedAction enemyMovedAction
+            IEnemyMovedAction enemyMovedAction,
+            IHeroGrabbedItemAction heroGrabbedItemAction
             )
         {
             SetupLevelAction = setupLevelAction;
@@ -27,6 +29,7 @@
             EndTurnAction = endTurnAction;
             HeroMovedAction = heroMovedAction;
             EnemyMovedAction = enemyMovedAction;
+            HeroGrabbedItemAction = heroGrabbedItemAction;
         }
     }
 }

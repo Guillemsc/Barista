@@ -1,6 +1,6 @@
 ﻿using Barista.Shared.Configuration;
 using Juce.Core.Architecture;
-using Juce.Core.Contracts;
+using Juce.Utils.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,6 +26,13 @@ namespace Barista.Shared.Entities.Item
             elements.Add(itemEntity.InstanceId, itemEntity);
 
             return itemEntity;
+        }
+
+        public void Despawn(ItemEntity itemEntity)
+        {
+            bool removed = elements.Remove(itemEntity.InstanceId);
+
+            Contract.IsTrue(removed);
         }
 
         public ItemEntity Get(int id)

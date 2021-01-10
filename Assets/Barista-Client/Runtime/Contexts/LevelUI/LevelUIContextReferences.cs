@@ -8,9 +8,9 @@ namespace Barista.Client.Contexts.LevelUI
     public class LevelUIContextReferences
     {
         [SerializeField] private LevelUICanvases levelUICanvases = default;
-        [SerializeField] private LevelUIViewModelsReferences levelUIViewModelsReferences = default;
+        [SerializeField] private LevelUIReferences levelUIViewModelsReferences = default;
 
         public LevelUICanvases LevelUICanvases => levelUICanvases;
-        public LevelUIViewModelsReferences LevelUIViewModelsReferences => levelUIViewModelsReferences;
+        public LevelUIReferences LevelUIReferences => levelUIViewModelsReferences;
     }
 }

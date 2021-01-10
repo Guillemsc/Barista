@@ -1,5 +1,6 @@
-﻿using Juce.Core.Architecture;
-using Juce.Core.Contracts;
+﻿using Barista.Shared.Logic.Items;
+using Juce.Core.Architecture;
+using Juce.Utils.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace Barista.Client.View.Entities.Item
             this.itemEntityViewFactory = itemEntityViewFactory;
         }
 
-        public ItemEntityView Spawn(string typeId, int instanceId)
+        public ItemEntityView Spawn(ItemType typeId, int instanceId)
         {
             ItemEntityView itemEntityView = itemEntityViewFactory.Create(typeId, instanceId);
 
@@ -57,6 +58,11 @@ namespace Barista.Client.View.Entities.Item
         public Lazy<ItemEntityView> GetLazy(int instanceId)
         {
             return new Lazy<ItemEntityView>(() => { return Get(instanceId); });
+        }
+
+        public Lazy<IMovableEntityView> GetLazyAsMovable(int instanceId)
+        {
+            return new Lazy<IMovableEntityView>(() => { return Get(instanceId); });
         }
     }
 }

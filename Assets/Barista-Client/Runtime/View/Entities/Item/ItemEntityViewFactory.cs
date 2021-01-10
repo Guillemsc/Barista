@@ -1,4 +1,5 @@
 ﻿using Barista.Client.Libraries;
+using Barista.Shared.Logic.Items;
 
 namespace Barista.Client.View.Entities.Item
 {
@@ -11,7 +12,7 @@ namespace Barista.Client.View.Entities.Item
             this.itemsLibrary = enemiesLibrary;
         }
 
-        public ItemEntityView Create(string typeId, int instanceId)
+        public ItemEntityView Create(ItemType typeId, int instanceId)
         {
             bool found = itemsLibrary.TryGetItem(typeId, out ItemEntityView itemEntityView);
 
@@ -27,7 +28,7 @@ namespace Barista.Client.View.Entities.Item
                     $"{instanceId} was null on {nameof(ItemEntityViewFactory)}");
             }
 
-            ItemEntityView newItemEntityView = itemEntityView.gameObject.InstantiateAndGetComponent<ItemEntityView>();
+            ItemEntityView newItemEntityView = itemEntityView.InstantiateGameObjectAndGet();
 
             newItemEntityView.Construct(typeId, instanceId);
 

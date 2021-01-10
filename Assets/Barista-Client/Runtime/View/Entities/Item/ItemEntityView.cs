@@ -1,14 +1,17 @@
-﻿using Juce.CoreUnity.Architecture;
+﻿using Barista.Shared.Logic.Items;
+using Juce.CoreUnity.Architecture;
 using UnityEngine;
 
 namespace Barista.Client.View.Entities.Item
 {
-    public class ItemEntityView : MonoBehaviour, IEntityView<string>
+    public class ItemEntityView : MonoBehaviour, IEntityView<ItemType>, IMovableEntityView
     {
-        public string TypeId { get; private set; }
+        public ItemType TypeId { get; private set; }
         public int InstanceId { get; private set; }
 
-        public void Construct(string typeId, int instanceId)
+        public Transform Transform => gameObject.transform;
+
+        public void Construct(ItemType typeId, int instanceId)
         {
             TypeId = typeId;
             InstanceId = instanceId;

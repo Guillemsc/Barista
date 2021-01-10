@@ -5,7 +5,7 @@ using Juce.Core.Pathfinding;
 using Juce.Core.Pathfinding.Algorithms;
 using System.Collections.Generic;
 
-namespace Barista.Shared.Factories
+namespace Barista.Shared.Logic.Pathfinding
 {
     public class PathfindingFactory
     {

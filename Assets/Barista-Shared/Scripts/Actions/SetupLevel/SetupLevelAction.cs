@@ -2,6 +2,7 @@
 using Barista.Shared.Entities.Enemy;
 using Barista.Shared.Entities.Environment;
 using Barista.Shared.Entities.Hero;
+using Barista.Shared.Entities.Item;
 using Barista.Shared.EntryPoints;
 using Barista.Shared.Events;
 using Juce.Core.Events;
@@ -16,6 +17,7 @@ namespace Barista.Shared.Actions
         private readonly EnvironmentEntityRepository environmentEntityRepository;
         private readonly HeroEntityRepository heroEntityRepository;
         private readonly EnemyEntityRepository enemyEntityRepository;
+        private readonly ItemEntityRepository itemEntityRepository;
         private readonly LevelState levelState;
 
         public SetupLevelAction(
@@ -24,6 +26,7 @@ namespace Barista.Shared.Actions
             EnvironmentEntityRepository environmentEntityRepository,
             HeroEntityRepository heroEntityRepository,
             EnemyEntityRepository enemyEntityRepository,
+            ItemEntityRepository itemEntityRepository,
             LevelState levelState
             )
         {
@@ -32,6 +35,7 @@ namespace Barista.Shared.Actions
             this.environmentEntityRepository = environmentEntityRepository;
             this.heroEntityRepository = heroEntityRepository;
             this.enemyEntityRepository = enemyEntityRepository;
+            this.itemEntityRepository = itemEntityRepository;
             this.levelState = levelState;
         }
 
@@ -53,10 +57,20 @@ namespace Barista.Shared.Actions
                 spawnedEnemyEntities.Add(enemyEntity);
             }
 
+            List<ItemEntity> spawnedItemEntities = new List<ItemEntity>();
+
+            foreach (ItemSetup itemSetup in levelSetup.ItemSetups)
+            {
+                ItemEntity itemEntity = itemEntityRepository.Spawn(itemSetup);
+                itemEntity.GridPosition = itemSetup.SpawnPosition;
+                spawnedItemEntities.Add(itemEntity);
+            }
+
             eventDispatcher.Dispatch(new SetupLevelOutEvent(
                 loadedEnvironmentEntity, 
                 spawnedHeroEntity,
-                spawnedEnemyEntities
+                spawnedEnemyEntities,
+                spawnedItemEntities
                 ));
         }
     }

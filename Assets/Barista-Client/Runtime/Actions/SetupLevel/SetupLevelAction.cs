@@ -1,15 +1,19 @@
 ﻿using Barista.Client.Input;
 using Barista.Client.Instructions.Enemy;
+using Barista.Client.Instructions.Entity;
 using Barista.Client.Instructions.Environment;
 using Barista.Client.Instructions.Hero;
+using Barista.Client.Instructions.Item;
 using Barista.Client.Instructions.Level;
 using Barista.Client.Timelines;
 using Barista.Client.View.Entities.Enemy;
 using Barista.Client.View.Entities.Environment;
 using Barista.Client.View.Entities.Hero;
+using Barista.Client.View.Entities.Item;
 using Barista.Shared.Entities.Enemy;
 using Barista.Shared.Entities.Environment;
 using Barista.Shared.Entities.Hero;
+using Barista.Shared.Entities.Item;
 using Juce.Core.Sequencing;
 using System.Collections.Generic;
 
@@ -21,6 +25,7 @@ namespace Barista.Client.Actions
         private readonly EnvironmentEntityViewRepository environmentEntityViewRepository;
         private readonly HeroEntityViewRepository heroEntityViewRepository;
         private readonly EnemyEntityViewRepository enemyEntityViewRepository;
+        private readonly ItemEntityViewRepository itemEntityViewRepository;
         private readonly MainInput mainInput;
 
         public SetupLevelAction(
@@ -28,6 +33,7 @@ namespace Barista.Client.Actions
             EnvironmentEntityViewRepository environmentEntityViewRepository,
             HeroEntityViewRepository heroEntityViewRepository,
             EnemyEntityViewRepository enemyEntityViewRepository,
+            ItemEntityViewRepository itemEntityViewRepository,
             MainInput mainInput
             )
         {
@@ -35,13 +41,15 @@ namespace Barista.Client.Actions
             this.environmentEntityViewRepository = environmentEntityViewRepository;
             this.heroEntityViewRepository = heroEntityViewRepository;
             this.enemyEntityViewRepository = enemyEntityViewRepository;
+            this.itemEntityViewRepository = itemEntityViewRepository;
             this.mainInput = mainInput;
         }
 
         public void Invoke(
             EnvironmentEntity environmentEntity,
             HeroEntity heroEntity,
-            IReadOnlyList<EnemyEntity> enemyEntities
+            IReadOnlyList<EnemyEntity> enemyEntities,
+            IReadOnlyList<ItemEntity> itemEntities
             )
         {
             InstructionsSequence sequence = new InstructionsSequence();
@@ -58,9 +66,9 @@ namespace Barista.Client.Actions
                 heroEntity.InstanceId
                 ));
 
-            sequence.Append(new SetHeroEntityViewGridPositionInstruction(
+            sequence.Append(new SetEntityViewGridPositionInstruction(
                 environmentEntityViewRepository.GetLazy(environmentEntity.InstanceId),
-                heroEntityViewRepository.GetLazy(heroEntity.InstanceId),
+                heroEntityViewRepository.GetLazyAsMovable(heroEntity.InstanceId),
                 heroEntity.GridPosition
                 ));
 
@@ -72,10 +80,25 @@ namespace Barista.Client.Actions
                     enemyEntity.InstanceId
                     ));
 
-                sequence.Append(new SetEnemyEntityViewGridPositionInstruction(
+                sequence.Append(new SetEntityViewGridPositionInstruction(
                     environmentEntityViewRepository.GetLazy(environmentEntity.InstanceId),
-                    enemyEntityViewRepository.GetLazy(enemyEntity.InstanceId),
+                    enemyEntityViewRepository.GetLazyAsMovable(enemyEntity.InstanceId),
                     enemyEntity.GridPosition
+                    ));
+            }
+
+            foreach(ItemEntity itemEntity in itemEntities)
+            {
+                sequence.Append(new SpawnItemEntityViewInstruction(
+                    itemEntityViewRepository,
+                    itemEntity.TypeId,
+                    itemEntity.InstanceId
+                    ));
+
+                sequence.Append(new SetEntityViewGridPositionInstruction(
+                    environmentEntityViewRepository.GetLazy(environmentEntity.InstanceId),
+                    itemEntityViewRepository.GetLazyAsMovable(itemEntity.InstanceId),
+                    itemEntity.GridPosition
                     ));
             }
 

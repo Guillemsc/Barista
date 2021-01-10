@@ -14,7 +14,10 @@ namespace Barista.Shared.Entities.Item
 
         public ItemEntity Create(ItemSetup itemSetup)
         {
-            ItemEntity itemEntity = new ItemEntity(itemSetup.TypeId, idGenerator.Generate());
+            ItemEntity itemEntity = new ItemEntity(
+                itemSetup.TypeId, 
+                idGenerator.Generate()
+                );
 
             return itemEntity;
         }

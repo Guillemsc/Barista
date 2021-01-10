@@ -27,7 +27,7 @@ namespace Barista.Client.View.Entities.Enemy
                     $"{instanceId} was null on {nameof(EnemyEntityViewFactory)}");
             }
 
-            EnemyEntityView newEnemyEntityView = enemyEntityView.gameObject.InstantiateAndGetComponent<EnemyEntityView>();
+            EnemyEntityView newEnemyEntityView = enemyEntityView.InstantiateGameObjectAndGet();
 
             newEnemyEntityView.Construct(typeId, instanceId);
 

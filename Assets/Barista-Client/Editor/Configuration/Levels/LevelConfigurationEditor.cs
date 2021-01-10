@@ -166,11 +166,18 @@ namespace Barista.Client.Configuration.Levels
                     environmentItem.Prefab.HeroEntitySpawnView.transform.position);
 
                 targetData.EnemySpawnPositions = new List<Vector2Int>();
+                targetData.ItemSpawnPositions = new List<Vector2Int>();
 
-                foreach(EnemyEntitySpawnView enemySpawn in environmentItem.Prefab.EnemyEntitySpawnViews)
+                foreach (EnemyEntitySpawnView enemySpawn in environmentItem.Prefab.EnemyEntitySpawnViews)
                 {
                     targetData.EnemySpawnPositions.Add(EnvironmentUtils.WorldToGridPosition(environmentItem.Prefab,
                         enemySpawn.transform.position));
+                }
+
+                foreach (ItemEntitySpawnView itemSpawn in environmentItem.Prefab.ItemEntitySpawnViews)
+                {
+                    targetData.ItemSpawnPositions.Add(EnvironmentUtils.WorldToGridPosition(environmentItem.Prefab,
+                        itemSpawn.transform.position));
                 }
             }
 

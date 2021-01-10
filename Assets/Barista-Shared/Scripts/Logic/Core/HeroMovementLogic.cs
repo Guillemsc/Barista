@@ -1,7 +1,9 @@
 ﻿using Barista.Shared.Entities.Environment;
 using Barista.Shared.Entities.Hero;
+using Barista.Shared.Entities.Item;
+using Barista.Shared.EntryPoints;
 using Barista.Shared.Events;
-using Barista.Shared.Factories;
+using Barista.Shared.Logic.Pathfinding;
 using Juce.Core.Containers;
 using Juce.Core.Direction;
 using Juce.Core.Events;
@@ -9,10 +11,30 @@ using System.Collections.Generic;
 
 namespace Barista.Shared.Logic
 {
-    public static class HeroMovementLogic
+    public class HeroMovementLogic
     {
-        public static bool CanMoveHero(
+        private readonly LevelLogic levelLogic;
+        private readonly IEventDispatcher eventDispatcher;
+        private readonly EnvironmentEntityRepository environmentEntityRepository;
+        private readonly PathfindingFactory pathfindingFactory;
+        private readonly LevelState levelState;
+
+        public HeroMovementLogic(
+            LevelLogic levelLogic,
+            IEventDispatcher eventDispatcher,
+            EnvironmentEntityRepository environmentEntityRepository,
             PathfindingFactory pathfindingFactory,
+            LevelState levelState
+            )
+        {
+            this.eventDispatcher = eventDispatcher;
+            this.levelLogic = levelLogic;
+            this.environmentEntityRepository = environmentEntityRepository;
+            this.pathfindingFactory = pathfindingFactory;
+            this.levelState = levelState;
+        }
+
+        public bool CanMoveHero(
             HeroEntity heroEntity,
             Direction4Axis direction
             )
@@ -36,10 +58,7 @@ namespace Barista.Shared.Logic
             return true;
         }
 
-        public static void MoveHero(
-            IEventDispatcher eventDispatcher,
-            PathfindingFactory pathfindingFactory,
-            EnvironmentEntity environmentEntity,
+        public void MoveHero(
             HeroEntity heroEntity,
             Direction4Axis direction
             )
@@ -62,14 +81,25 @@ namespace Barista.Shared.Logic
 
             heroEntity.SetGridPosition(newPosition);
 
+            EnvironmentEntity environmentEntity = environmentEntityRepository.Get(levelState.LoadedEnvironmentId);
+
             eventDispatcher.Dispatch(new HeroMovedOutEvent(
                 environmentEntity,
                 heroEntity,
                 path
                 ));
+
+            bool couldGetItem = levelLogic.HeroGrabItemsLogic.TryGetItemAtPosition(heroEntity.GridPosition, out ItemEntity itemEntity);
+
+            if(!couldGetItem)
+            {
+                return;
+            }
+
+            levelLogic.HeroGrabItemsLogic.HeroGrabsItem(heroEntity, itemEntity);
         }
 
-        private static Int2 GetNewPositionFormDirection(
+        private Int2 GetNewPositionFormDirection(
             Direction4Axis direction, 
             Int2 position, 
             int distance

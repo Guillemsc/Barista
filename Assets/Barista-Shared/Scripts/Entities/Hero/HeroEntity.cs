@@ -1,4 +1,5 @@
 ﻿using Barista.Shared.Entities.Item;
+using Barista.Shared.Logic.Items;
 using Juce.Core.Architecture;
 using Juce.Core.Containers;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace Barista.Shared.Entities.Hero
         public Int2 GridPosition { get; private set; }
         public Int2 LastGridPosition { get; private set; }
 
-        public List<ItemEntity> items { get; } = new List<ItemEntity>();
+        public Dictionary<ItemType, IItem> Items { get; } = new Dictionary<ItemType, IItem>();
 
         public bool Alive => throw new System.NotImplementedException();
 

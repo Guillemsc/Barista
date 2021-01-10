@@ -2,8 +2,8 @@
 using Barista.Shared.Entities.Environment;
 using Barista.Shared.Entities.Hero;
 using Barista.Shared.EntryPoints;
-using Barista.Shared.Factories;
 using Barista.Shared.Logic.EnemyActions;
+using Barista.Shared.Logic.Pathfinding;
 
 namespace Barista.Shared.Logic.EnemyBrain
 {
@@ -36,7 +36,7 @@ namespace Barista.Shared.Logic.EnemyBrain
 
             if(heroEntity.GridPosition.Distance(enemyEntity.GridPosition) > 1)
             {
-                return new MoveTowardsEntityEnemyAction(heroEntity);
+                return new MoveTowardsHeroEnemyAction(heroEntity);
             }
 
             return new AttackEntityEnemyAction(heroEntity);

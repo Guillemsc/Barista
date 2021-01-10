@@ -27,7 +27,7 @@ namespace Barista.Client.View.Entities.Hero
                     $"{instanceId} was null on {nameof(HeroEntityViewFactory)}");
             }
 
-            HeroEntityView newHeroEntityView = heroEntityView.gameObject.InstantiateAndGetComponent<HeroEntityView>();
+            HeroEntityView newHeroEntityView = heroEntityView.InstantiateGameObjectAndGet();
 
             newHeroEntityView.Construct(typeId, instanceId);
 

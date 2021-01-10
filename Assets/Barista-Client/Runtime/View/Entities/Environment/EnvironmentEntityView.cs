@@ -1,6 +1,6 @@
 ﻿using Barista.Client.View.Spawns;
-using Juce.Core.Contracts;
 using Juce.CoreUnity.Architecture;
+using Juce.Utils.Contracts;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -18,9 +18,7 @@ namespace Barista.Client.View.Entities.Environment
         [Header("Spawns")]
         [SerializeField] private HeroEntitySpawnView heroEntitySpawnView = default;
         [SerializeField] private List<EnemyEntitySpawnView> enemyEntitySpawnViews = default;
-
-        [Header("General")]
-        [SerializeField] private List<Component> toDisable = default;
+        [SerializeField] private List<ItemEntitySpawnView> itemEntitySpawnViews = default;
 
         public string TypeId { get; private set; }
         public int InstanceId { get; private set; }
@@ -29,6 +27,7 @@ namespace Barista.Client.View.Entities.Environment
         public Tilemap WalkabilityTilemap => walkabilityTilemap;
         public HeroEntitySpawnView HeroEntitySpawnView => heroEntitySpawnView;
         public IReadOnlyList<EnemyEntitySpawnView> EnemyEntitySpawnViews => enemyEntitySpawnViews;
+        public IReadOnlyList<ItemEntitySpawnView> ItemEntitySpawnViews => itemEntitySpawnViews;
 
         private void Awake()
         {

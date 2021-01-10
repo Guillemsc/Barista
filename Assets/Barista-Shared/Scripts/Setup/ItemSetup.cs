@@ -1,14 +1,15 @@
-﻿using Juce.Core.Containers;
+﻿using Barista.Shared.Logic.Items;
+using Juce.Core.Containers;
 
 namespace Barista.Shared.Configuration
 {
     public class ItemSetup
     {
-        public string TypeId { get; }
+        public ItemType TypeId { get; }
         public Int2 SpawnPosition { get; }
 
         public ItemSetup(
-            string typeId,
+            ItemType typeId,
             Int2 spawnPosition
             )
         {
