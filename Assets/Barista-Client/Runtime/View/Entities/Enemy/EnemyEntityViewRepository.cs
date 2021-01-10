@@ -1,5 +1,5 @@
 ﻿using Juce.Core.Architecture;
-using Juce.Utils.Contracts;
+using Juce.Core.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;

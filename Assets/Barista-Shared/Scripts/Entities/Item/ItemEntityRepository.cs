@@ -1,6 +1,6 @@
 ﻿using Barista.Shared.Configuration;
 using Juce.Core.Architecture;
-using Juce.Utils.Contracts;
+using Juce.Core.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 

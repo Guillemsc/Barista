@@ -44,7 +44,7 @@ namespace Barista.Client.UI.Items
             }
 
             TextMeshProTextFeedback textFeedback = setStacksFeedback.GetFeedback<TextMeshProTextFeedback>("stacks");
-            textFeedback.Value $"x{stacks}";
+            textFeedback.Value = $"x{stacks}";
 
             stacksText.gameObject.SetActive(true);
 

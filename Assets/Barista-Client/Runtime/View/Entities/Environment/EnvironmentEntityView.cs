@@ -1,6 +1,6 @@
 ﻿using Barista.Client.View.Spawns;
+using Juce.Core.Contracts;
 using Juce.CoreUnity.Architecture;
-using Juce.Utils.Contracts;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
