@@ -48,7 +48,7 @@ namespace Barista.Client.UI.Items
 
             stacksText.gameObject.SetActive(true);
 
-            stacksText.text = $"x{stacks}";
+            setStacksFeedback.Play().RunAsync();
         }
 
         private void OnClick(PointerEventData data)

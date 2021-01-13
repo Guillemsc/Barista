@@ -1,9 +1,6 @@
-﻿using Juce.Logic.Graphs;
-using Juce.Logic.Instructions;
-using Juce.Logic.Nodes;
-using Juce.Logic.Ports;
+﻿using Juce.Logic.Nodes;
+using Juce.Scripting;
 using System;
-using System.Collections.Generic;
 using XNode;
 
 namespace Juce.Logic.Compiler
@@ -17,9 +14,9 @@ namespace Juce.Logic.Compiler
             this.logicGraph = logicGraph;
         }
 
-        public ScriptExecutor Compile()
+        public Script Compile()
         {
-            LinkAllScriptPorts();
+            Script script = CompileAllNodes();
 
             StartFlowNode startFlowNode = GetNode<StartFlowNode>();
 
@@ -41,12 +38,7 @@ namespace Juce.Logic.Compiler
                 LinkInstructionNode(currentFlowNode);
             }
 
-            IReadOnlyList<ScriptInstruction> scriptInstructions = GetAllScriptInstructions();
-
-            return new ScriptExecutor(
-                startFlowNode.FlowScriptInstruction,
-                scriptInstructions
-                );
+            return script;
         }
 
         public bool TryGetNextFlowNode(FlowNode flowNode, out FlowNode nextFlowNode)
@@ -82,8 +74,10 @@ namespace Juce.Logic.Compiler
             return true;
         }
 
-        public void LinkAllScriptPorts()
+        public Script CompileAllNodes()
         {
+            Script script = new Script();
+
             foreach (Node node in logicGraph.nodes)
             {
                 InstructionNode instructionNode = node as InstructionNode;
@@ -93,13 +87,18 @@ namespace Juce.Logic.Compiler
                     continue;
                 }
 
-                instructionNode.LinkScriptPorts();
+                instructionNode.Compile(script);
             }
+
+            return script;
         }
 
         public void LinkFlowNodes(FlowNode flowNode1, FlowNode flowNode2)
         {
-            flowNode1.FlowScriptInstruction.Flow = flowNode2.FlowScriptInstruction;
+            FlowScriptInstruction flowScriptInstruction1 = flowNode1.CompiledScriptInstruction as FlowScriptInstruction;
+            FlowScriptInstruction flowScriptInstruction2 = flowNode2.CompiledScriptInstruction as FlowScriptInstruction;
+
+            flowScriptInstruction1.ConnectFlow(flowScriptInstruction2);
         }
 
         public void LinkInstructionNode(InstructionNode instructionNode)
@@ -110,32 +109,49 @@ namespace Juce.Logic.Compiler
 
                 if(!found)
                 {
+                    SetInputPortFallbackValue(instructionNode, inputPort);
+
                     continue;
                 }
 
                 LinkInstructionNode(connectedNode);
 
-                LinkPort(instructionNode, connectedNode, inputPort);
+                LinkInputToOutputPort(instructionNode, connectedNode, inputPort);
             }
         }
 
-        public void LinkPort(InstructionNode instructionNode, InstructionNode connectedNode, NodePort inputPort)
+        public void LinkInputToOutputPort(InstructionNode instructionNode, InstructionNode connectedNode, NodePort inputPort)
         {
-            InScriptPort inPort = instructionNode.GetInputScriptPort(inputPort);
+            bool inputLogicPortFound = instructionNode.TryGetInputLogicPort(inputPort, out LogicPort inputLogicPort);
 
-            if(inPort == null)
+            if(!inputLogicPortFound)
+            {
+                UnityEngine.Debug.LogError("Tried to get input logic port but it was not found");
+                return;
+            }
+
+            bool outputLogicPortFound = connectedNode.TryGetOutputLogicPort(inputPort.Connection, out LogicPort outputLogicPort);
+
+            if(!outputLogicPortFound)
+            {
+                UnityEngine.Debug.LogError("Tried to get output logic port but it was not found");
+                return;
+            }
+
+            instructionNode.CompiledScriptInstruction.ConnectInputToOutputPort(inputLogicPort.Id,
+                connectedNode.CompiledScriptInstruction, outputLogicPort.Id);
+        }
+
+        public void SetInputPortFallbackValue(InstructionNode instructionNode, NodePort inputPort)
+        {
+            bool inputLogicPortFound = instructionNode.TryGetInputLogicPort(inputPort, out LogicPort inputLogicPort);
+
+            if(!inputLogicPortFound)
             {
                 return;
             }
 
-            OutScriptPort outPort = connectedNode.GetOutputScriptPort(inputPort.Connection);
-
-            if(outPort == null)
-            {
-                return;
-            }
-
-            inPort.Connect(outPort);
+            instructionNode.CompiledScriptInstruction.SetInputPortFallbackValue(inputLogicPort.Id, inputLogicPort.FallbackValue);
         }
 
         public T GetNode<T>() where T : Node
@@ -151,25 +167,6 @@ namespace Juce.Logic.Compiler
             }
 
             return null;
-        }
-
-        public List<ScriptInstruction> GetAllScriptInstructions()
-        {
-            List<ScriptInstruction> ret = new List<ScriptInstruction>();
-
-            foreach (Node node in logicGraph.nodes)
-            {
-                InstructionNode instructionNode = node as InstructionNode;
-
-                if (instructionNode == null)
-                {
-                    continue;
-                }
-
-                ret.Add(instructionNode.ScriptInstruction);
-            }
-
-            return ret;
         }
     }
 }

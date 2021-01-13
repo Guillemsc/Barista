@@ -130,10 +130,317 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
+  FlowIn: {}
+  FlowOut: {}
   typeIn: 0
   value1In: 3
   value2In: 4.4
   resultOut: 0
+  floatOperationFlowScriptInstruction: {}
+--- !u!114 &-7514396112464977643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76e526bfe556090488b2ca5c294b5203, type: 3}
+  m_Name: Int Addition
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 56, y: -40}
+  ports:
+    keys:
+    - ValueAIn
+    - ValueBIn
+    - ResultOut
+    - FlowIn
+    - FlowOut
+    values:
+    - _fieldName: ValueAIn
+      _node: {fileID: -7514396112464977643}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: ValueBIn
+      _node: {fileID: -7514396112464977643}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: ResultOut
+      _node: {fileID: -7514396112464977643}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: ValueAIn
+        node: {fileID: -428592858335385556}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: FlowIn
+      _node: {fileID: -7514396112464977643}
+      _typeQualifiedName: Juce.Logic.FlowConnection, Juce.Logic.Runtime, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: FlowOut
+        node: {fileID: -6341112054466775412}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: FlowOut
+      _node: {fileID: -7514396112464977643}
+      _typeQualifiedName: Juce.Logic.FlowConnection, Juce.Logic.Runtime, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: FlowIn
+        node: {fileID: -428592858335385556}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+  ValueAIn: 5
+  ValueBIn: 5
+  ResultOut: 0
+--- !u!114 &-6341112054466775412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c112b2916c41e6041a933d57960c1d72, type: 3}
+  m_Name: Start Flow
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -232, y: -56}
+  ports:
+    keys:
+    - FlowOut
+    - FlowIn
+    values:
+    - _fieldName: FlowOut
+      _node: {fileID: -6341112054466775412}
+      _typeQualifiedName: Juce.Logic.FlowConnection, Juce.Logic.Runtime, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: FlowIn
+        node: {fileID: -7514396112464977643}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: FlowIn
+      _node: {fileID: -6341112054466775412}
+      _typeQualifiedName: Juce.Logic.FlowConnection, Juce.Logic.Runtime, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+--- !u!114 &-4405386649004589638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd633aaa8bffa084c93d2934de874619, type: 3}
+  m_Name: Unity Log String
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 888, y: -24}
+  ports:
+    keys:
+    - ValueIn
+    - FlowIn
+    - FlowOut
+    values:
+    - _fieldName: ValueIn
+      _node: {fileID: -4405386649004589638}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: ValueOut
+        node: {fileID: -2907059120550261470}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: FlowIn
+      _node: {fileID: -4405386649004589638}
+      _typeQualifiedName: Juce.Logic.FlowConnection, Juce.Logic.Runtime, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: FlowOut
+        node: {fileID: -2907059120550261470}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: FlowOut
+      _node: {fileID: -4405386649004589638}
+      _typeQualifiedName: Juce.Logic.FlowConnection, Juce.Logic.Runtime, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: FlowIn
+        node: {fileID: -2423405875229359141}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+  ValueIn: 
+--- !u!114 &-2907059120550261470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e596ddb2d54db748b59137feca9c082, type: 3}
+  m_Name: Int To String
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 584, y: -24}
+  ports:
+    keys:
+    - ValueIn
+    - ValueOut
+    - FlowIn
+    - FlowOut
+    values:
+    - _fieldName: ValueIn
+      _node: {fileID: -2907059120550261470}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: ResultOut
+        node: {fileID: -428592858335385556}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: ValueOut
+      _node: {fileID: -2907059120550261470}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: ValueIn
+        node: {fileID: -4405386649004589638}
+        reroutePoints: []
+      - fieldName: ValueIn
+        node: {fileID: -2423405875229359141}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: FlowIn
+      _node: {fileID: -2907059120550261470}
+      _typeQualifiedName: Juce.Logic.FlowConnection, Juce.Logic.Runtime, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: FlowOut
+        node: {fileID: -428592858335385556}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: FlowOut
+      _node: {fileID: -2907059120550261470}
+      _typeQualifiedName: Juce.Logic.FlowConnection, Juce.Logic.Runtime, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: FlowIn
+        node: {fileID: -4405386649004589638}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+  ValueIn: 0
+  ValueOut: 
+--- !u!114 &-2423405875229359141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd633aaa8bffa084c93d2934de874619, type: 3}
+  m_Name: Unity Log String
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 1144, y: 88}
+  ports:
+    keys:
+    - ValueIn
+    - FlowIn
+    - FlowOut
+    values:
+    - _fieldName: ValueIn
+      _node: {fileID: -2423405875229359141}
+      _typeQualifiedName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: ValueOut
+        node: {fileID: -2907059120550261470}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: FlowIn
+      _node: {fileID: -2423405875229359141}
+      _typeQualifiedName: Juce.Logic.FlowConnection, Juce.Logic.Runtime, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: FlowOut
+        node: {fileID: -4405386649004589638}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: FlowOut
+      _node: {fileID: -2423405875229359141}
+      _typeQualifiedName: Juce.Logic.FlowConnection, Juce.Logic.Runtime, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+  ValueIn: 
 --- !u!114 &-1759438146972911545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,6 +498,8 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
+  FlowIn: {}
+  FlowOut: {}
 --- !u!114 &-1200140437901976914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,7 +553,91 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
+  FlowIn: {}
+  FlowOut: {}
   message: 
+--- !u!114 &-428592858335385556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76e526bfe556090488b2ca5c294b5203, type: 3}
+  m_Name: Int Addition
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 312, y: -24}
+  ports:
+    keys:
+    - ValueAIn
+    - ValueBIn
+    - ResultOut
+    - FlowIn
+    - FlowOut
+    values:
+    - _fieldName: ValueAIn
+      _node: {fileID: -428592858335385556}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: ResultOut
+        node: {fileID: -7514396112464977643}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: ValueBIn
+      _node: {fileID: -428592858335385556}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: ResultOut
+      _node: {fileID: -428592858335385556}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: ValueIn
+        node: {fileID: -2907059120550261470}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: FlowIn
+      _node: {fileID: -428592858335385556}
+      _typeQualifiedName: Juce.Logic.FlowConnection, Juce.Logic.Runtime, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: FlowOut
+        node: {fileID: -7514396112464977643}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+    - _fieldName: FlowOut
+      _node: {fileID: -428592858335385556}
+      _typeQualifiedName: Juce.Logic.FlowConnection, Juce.Logic.Runtime, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: FlowIn
+        node: {fileID: -2907059120550261470}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 1
+      _typeConstraint: 2
+      _dynamic: 0
+  ValueAIn: 5
+  ValueBIn: 5
+  ResultOut: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -258,13 +651,12 @@ MonoBehaviour:
   m_Name: Logic
   m_EditorClassIdentifier: 
   nodes:
-  - {fileID: -1272078935571617649}
-  - {fileID: 1929699110488086324}
-  - {fileID: 5327390763304632570}
-  - {fileID: 8629256114891420604}
-  - {fileID: -7626706277401126191}
-  - {fileID: 4472758402211581365}
-  - {fileID: -1200140437901976914}
+  - {fileID: -6341112054466775412}
+  - {fileID: -7514396112464977643}
+  - {fileID: -4405386649004589638}
+  - {fileID: -2907059120550261470}
+  - {fileID: -428592858335385556}
+  - {fileID: -2423405875229359141}
 --- !u!114 &981779772558785326
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,6 +743,8 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
+  FlowIn: {}
+  FlowOut: {}
   message: 
 --- !u!114 &4472758402211581365
 MonoBehaviour:
@@ -421,8 +815,11 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
+  FlowIn: {}
+  FlowOut: {}
   floatIn: 0
   stringOut: 
+  floatToStringFlowScriptInstruction: {}
 --- !u!114 &5327390763304632570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -492,6 +889,8 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
+  FlowIn: {}
+  FlowOut: {}
   intIn: 0
   stringOut: 0
 --- !u!114 &6344768633206029663
@@ -611,7 +1010,10 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
+  FlowIn: {}
+  FlowOut: {}
   typeIn: 0
   value1In: 4
   value2In: 0
   resultOut: 0
+  intOperationFlowScriptInstruction: {}
