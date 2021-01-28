@@ -3,6 +3,7 @@ using Barista.Shared.Entities.Environment;
 using Barista.Shared.Entities.Hero;
 using Barista.Shared.Entities.Item;
 using Barista.Shared.Events;
+using Barista.Shared.Logic.EnemyActions;
 using Barista.Shared.Logic.Items;
 using Barista.Shared.Logic.Pathfinding;
 using Barista.Shared.State;
@@ -14,24 +15,29 @@ namespace Barista.Shared.Logic
     public class LevelLogic
     {
         private readonly IEventDispatcher eventDispatcher;
+        private readonly EnemyEntityRepository enemyEntityRepository;
         private readonly ILevelSetupLogicActions levelSetupLogicActions;
         private readonly IHeroMovementActions heroMovementActions;
+        private readonly IEnemyMovementActions enemyMovementActions;
+        private readonly IHeroGrabItemsLogicAction heroGrabItemsLogicAction;
 
         private StateMachine<LevelLogicState> stateMachine = new StateMachine<LevelLogicState>();
 
-        public HeroMovementLogic HeroMovementLogic { get; }
-        public EnemyMovementLogic EnemyMovementLogic { get; }
-        public HeroGrabItemsLogic HeroGrabItemsLogic { get; }
-
         public LevelLogic(
             IEventDispatcher eventDispatcher,
+            EnemyEntityRepository enemyEntityRepository,
             ILevelSetupLogicActions levelSetupLogicActions,
-            IHeroMovementActions heroMovementActions
+            IHeroMovementActions heroMovementActions,
+            IEnemyMovementActions enemyMovementActions,
+            IHeroGrabItemsLogicAction heroGrabItemsLogicAction
             )
         {
             this.eventDispatcher = eventDispatcher;
+            this.enemyEntityRepository = enemyEntityRepository;
             this.levelSetupLogicActions = levelSetupLogicActions;
             this.heroMovementActions = heroMovementActions;
+            this.enemyMovementActions = enemyMovementActions;
+            this.heroGrabItemsLogicAction = heroGrabItemsLogicAction;
 
             GenerateStates();
             Link();
@@ -42,16 +48,27 @@ namespace Barista.Shared.Logic
             stateMachine.RegisterState(LevelLogicState.Setup, SetupState);
             stateMachine.RegisterState(LevelLogicState.Start, StartState);
             stateMachine.RegisterState(LevelLogicState.WaitingForPlayerAction, WaitingForPlayerActionState);
+            stateMachine.RegisterState(LevelLogicState.StartTurn, StartTurnState);
+            stateMachine.RegisterState(LevelLogicState.PerformTurn, PerformTurnState);
+            stateMachine.RegisterState(LevelLogicState.EndTurn, EndTurnState);
 
             stateMachine.RegisterConnection(LevelLogicState.Setup, LevelLogicState.Start);
             stateMachine.RegisterConnection(LevelLogicState.Start, LevelLogicState.WaitingForPlayerAction);
+            stateMachine.RegisterConnection(LevelLogicState.WaitingForPlayerAction, LevelLogicState.StartTurn);
+            stateMachine.RegisterConnection(LevelLogicState.StartTurn, LevelLogicState.PerformTurn);
+            stateMachine.RegisterConnection(LevelLogicState.PerformTurn, LevelLogicState.EndTurn);
+            stateMachine.RegisterConnection(LevelLogicState.EndTurn, LevelLogicState.WaitingForPlayerAction);
         }
 
         private void Link()
         {
             eventDispatcher.Subscribe((MoveHeroInEvent ev) =>
             {
+                stateMachine.Next(LevelLogicState.StartTurn);
+
                 heroMovementActions.MoveHero(ev.Direction);
+
+                stateMachine.Next(LevelLogicState.PerformTurn);
             });
 
             eventDispatcher.Subscribe((UseItemInEvent ev) =>
@@ -84,47 +101,58 @@ namespace Barista.Shared.Logic
             
         }
 
-        //public void StartTurn()
-        //{
-        //    eventDispatcher.Dispatch(new StartTurnOutEvent());
-        //}
+        private void StartTurnState()
+        {
+            eventDispatcher.Dispatch(new StartTurnOutEvent());
+        }
 
-        //public void TickTurn()
-        //{
-        //    foreach(EnemyEntity enemyEntity in enemyEntityRepository.Elements)
-        //    {
-        //        IEnemyAction enemyAction = enemyEntity.EnemyBrain.GenerateNextEnemyAction(enemyEntity);
+        private void PerformTurnState()
+        {
+            PerfromHeroTurn();
+            PerformEnemiesTurn();
 
-        //        switch(enemyAction)
-        //        {
-        //            case AttackEntityEnemyAction action:
-        //                {
+            stateMachine.Next(LevelLogicState.EndTurn);
+        }
 
-        //                }
-        //                break;
+        private void EndTurnState()
+        {
+            eventDispatcher.Dispatch(new EndTurnOutEvent());
 
-        //            case MoveTowardsHeroEnemyAction action:
-        //                {
-        //                    EnemyMovementLogic.MoveEnemyTowardsHero(
-        //                        enemyEntity,
-        //                        action.HeroEntityToReach,
-        //                        1
-        //                        );
-        //                }
-        //                break;
+            stateMachine.Next(LevelLogicState.WaitingForPlayerAction);
+        }
 
-        //            case IdleEnemyAction action:
-        //                {
+        private void PerfromHeroTurn()
+        {
+            heroGrabItemsLogicAction.HeroTryGrabItem();
+        }
 
-        //                }
-        //                break;
-        //        }
-        //    }
-        //}
+        private void PerformEnemiesTurn()
+        {
+            foreach (EnemyEntity enemyEntity in enemyEntityRepository.Elements)
+            {
+                IEnemyAction enemyAction = enemyEntity.EnemyBrain.GenerateNextEnemyAction(enemyEntity);
 
-        //public void EndTurn()
-        //{
-        //    eventDispatcher.Dispatch(new EndTurnOutEvent());
-        //}
+                switch (enemyAction)
+                {
+                    case AttackEntityEnemyAction action:
+                        {
+
+                        }
+                        break;
+
+                    case MoveTowardsHeroEnemyAction action:
+                        {
+                            enemyMovementActions.MoveEnemyTowardsHero(enemyEntity, 1);
+                        }
+                        break;
+
+                    case IdleEnemyAction action:
+                        {
+
+                        }
+                        break;
+                }
+            }
+        }
     }
 }

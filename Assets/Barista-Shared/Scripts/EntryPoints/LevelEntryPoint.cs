@@ -81,11 +81,30 @@ namespace Barista.Shared.EntryPoints
                 levelState
                 );
 
+            IEnemyMovementActions enemyMovementActions = new EnemyMovementActions(
+                eventDispatcher,
+                environmentEntityRepository,
+                heroEntityRepository,
+                pathFactory,
+                levelState
+                );
+
+            IHeroGrabItemsLogicAction heroGrabItemActions = new HeroGrabItemsLogicAction(
+                eventDispatcher,
+                heroEntityRepository,
+                itemEntityRepository,
+                itemFactory,
+                levelState
+                );
+
             // Logic
             levelLogic = new LevelLogic(
                 eventDispatcher,
+                enemyEntityRepository,
                 levelSetupLogicActions,
-                heroMovementActions
+                heroMovementActions,
+                enemyMovementActions,
+                heroGrabItemActions
                 );
         }
 

@@ -4,6 +4,9 @@
     {
         Setup,
         Start,
-        WaitingForPlayerAction
+        WaitingForPlayerAction,
+        StartTurn,
+        PerformTurn,
+        EndTurn,
     }
 }

@@ -10,32 +10,33 @@ using System.Collections.Generic;
 
 namespace Barista.Shared.Logic
 {
-    public class EnemyMovementLogic
+    public class EnemyMovementActions : IEnemyMovementActions
     {
         private readonly IEventDispatcher eventDispatcher;
         private readonly EnvironmentEntityRepository environmentEntityRepository;
+        private readonly HeroEntityRepository heroEntityRepository;
         private readonly PathFactory pathfindingFactory;
         private readonly LevelState levelState;
 
-        public EnemyMovementLogic(
+        public EnemyMovementActions(
             IEventDispatcher eventDispatcher,
             EnvironmentEntityRepository environmentEntityRepository,
+            HeroEntityRepository heroEntityRepository,
             PathFactory pathfindingFactory,
             LevelState levelState
             )
         {
             this.eventDispatcher = eventDispatcher;
             this.environmentEntityRepository = environmentEntityRepository;
+            this.heroEntityRepository = heroEntityRepository;
             this.pathfindingFactory = pathfindingFactory;
             this.levelState = levelState;
         }
 
-        public void MoveEnemyTowardsHero(
-            EnemyEntity enemyEntity,
-            HeroEntity heroEntity,
-            int range
-            )
+        public void MoveEnemyTowardsHero(EnemyEntity enemyEntity, int range)
         {
+            HeroEntity heroEntity = heroEntityRepository.Get(levelState.LoadedHeroId);
+
             IReadOnlyList<Int2> path = pathfindingFactory.CreatePath(enemyEntity.GridPosition, heroEntity.LastGridPosition);
 
             if (path.Count == 0)
@@ -47,9 +48,9 @@ namespace Barista.Shared.Logic
 
             range += 1;
 
-            for(int i = 0; i < range; ++i)
+            for (int i = 0; i < range; ++i)
             {
-                if(i >= path.Count)
+                if (i >= path.Count)
                 {
                     break;
                 }

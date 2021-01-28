@@ -2,39 +2,56 @@
 using Barista.Shared.Entities.Item;
 using Barista.Shared.Events;
 using Barista.Shared.Logic.Items;
+using Barista.Shared.State;
 using Juce.Core.Containers;
 using Juce.Core.Events;
-using System;
 
 namespace Barista.Shared.Logic
 {
-    public class HeroGrabItemsLogic
+    public class HeroGrabItemsLogicAction : IHeroGrabItemsLogicAction
     {
         private readonly IEventDispatcher eventDispatcher;
+        private readonly HeroEntityRepository heroEntityRepository;
         private readonly ItemEntityRepository itemEntityRepository;
         private readonly ItemFactory itemFactory;
+        private readonly LevelState levelState;
 
-        public HeroGrabItemsLogic(
+        public HeroGrabItemsLogicAction(
             IEventDispatcher eventDispatcher,
+            HeroEntityRepository heroEntityRepository,
             ItemEntityRepository itemEntityRepository,
-            ItemFactory itemFactory
+            ItemFactory itemFactory,
+            LevelState levelState
             )
         {
             this.eventDispatcher = eventDispatcher;
+            this.heroEntityRepository = heroEntityRepository;
             this.itemEntityRepository = itemEntityRepository;
             this.itemFactory = itemFactory;
+            this.levelState = levelState;
         }
 
-        public void HeroTriesToGrabItem()
+        public bool HeroTryGrabItem()
         {
+            HeroEntity heroEntity = heroEntityRepository.Get(levelState.LoadedHeroId);
 
-        }
+            bool couldGetItem = TryGetItemAtPosition(heroEntity.GridPosition, out ItemEntity itemEntity);
 
-        private bool TryGetItemAtPosition(Int2 position, out ItemEntity itemEntity)
-        {
-            foreach(ItemEntity item in itemEntityRepository.Elements)
+            if (!couldGetItem)
             {
-                if(item.GridPosition.Equals(position))
+                return false;
+            }
+
+            HeroGrabsItem(heroEntity, itemEntity);
+
+            return true;
+        }
+
+        public bool TryGetItemAtPosition(Int2 position, out ItemEntity itemEntity)
+        {
+            foreach (ItemEntity item in itemEntityRepository.Elements)
+            {
+                if (item.GridPosition.Equals(position))
                 {
                     itemEntity = item;
                     return true;
@@ -45,13 +62,13 @@ namespace Barista.Shared.Logic
             return false;
         }
 
-        private void HeroGrabsItem(HeroEntity heroEntity, ItemEntity itemEntity)
+        public void HeroGrabsItem(HeroEntity heroEntity, ItemEntity itemEntity)
         {
             itemEntityRepository.Despawn(itemEntity);
 
             bool found = heroEntity.Items.TryGetValue(itemEntity.TypeId, out IItem heroItem);
 
-            if(found)
+            if (found)
             {
                 heroItem.AddStack();
 
