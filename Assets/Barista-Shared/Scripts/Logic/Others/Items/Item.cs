@@ -7,10 +7,14 @@ namespace Barista.Shared.Logic.Items
     {
         public ItemType Type { get; }
         public int Stacks { get; private set; } 
+        public IItemEffect Effect { get; private set; }
+        public IRange EffectRange { get; }
 
-        public Item(ItemType type)
+        public Item(ItemType type, IItemEffect effect, IRange effectRange)
         {
             Type = type;
+            Effect = effect;
+            EffectRange = effectRange;
         }
 
         public void AddStack()
@@ -22,7 +26,5 @@ namespace Barista.Shared.Logic.Items
         {
             Stacks = Math.Max(0, Stacks - 1);
         }
-
-
     }
 }

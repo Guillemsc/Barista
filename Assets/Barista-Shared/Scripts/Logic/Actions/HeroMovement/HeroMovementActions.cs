@@ -94,17 +94,6 @@ namespace Barista.Shared.Logic
                 ));
 
             return true;
-
-            //bool couldGetItem = levelLogic.HeroGrabItemsLogic.TryGetItemAtPosition(heroEntity.GridPosition, out ItemEntity itemEntity);
-
-            //if (!couldGetItem)
-            //{
-            //    return;
-            //}
-
-            //levelLogic.HeroGrabItemsLogic.HeroGrabsItem(heroEntity, itemEntity);
-
-            //return tr
         }
 
         private Int2 GetNewPositionFormDirection(

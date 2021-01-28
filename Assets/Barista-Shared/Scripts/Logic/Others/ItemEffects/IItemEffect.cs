@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Barista.Shared.Logic.Range;
 
 namespace Barista.Shared.Logic.Items
 {
-    public interface IItemEffects
+    public interface IItemEffect
     {
         void Execute();
     }

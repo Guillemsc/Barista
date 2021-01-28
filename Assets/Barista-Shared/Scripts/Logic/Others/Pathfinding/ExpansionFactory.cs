@@ -20,6 +20,7 @@ namespace Barista.Shared.Logic.Pathfinding
 
         public IReadOnlyList<Int2> Expand(Int2 origin, int range)
         {
+            this.origin = origin;
             this.range = range;
 
             BFSPathfindingAlgorithm<Int2> algorithm = new BFSPathfindingAlgorithm<Int2>(

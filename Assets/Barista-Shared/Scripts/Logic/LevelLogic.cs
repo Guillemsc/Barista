@@ -7,8 +7,10 @@ using Barista.Shared.Logic.EnemyActions;
 using Barista.Shared.Logic.Items;
 using Barista.Shared.Logic.Pathfinding;
 using Barista.Shared.State;
+using Juce.Core.Containers;
 using Juce.Core.Events;
 using Juce.Core.State;
+using System.Collections.Generic;
 
 namespace Barista.Shared.Logic
 {
@@ -20,6 +22,7 @@ namespace Barista.Shared.Logic
         private readonly IHeroMovementActions heroMovementActions;
         private readonly IEnemyMovementActions enemyMovementActions;
         private readonly IHeroGrabItemsLogicAction heroGrabItemsLogicAction;
+        private readonly IHeroItemEffectLogicAction heroItemEffectLogicAction;
 
         private StateMachine<LevelLogicState> stateMachine = new StateMachine<LevelLogicState>();
 
@@ -29,7 +32,8 @@ namespace Barista.Shared.Logic
             ILevelSetupLogicActions levelSetupLogicActions,
             IHeroMovementActions heroMovementActions,
             IEnemyMovementActions enemyMovementActions,
-            IHeroGrabItemsLogicAction heroGrabItemsLogicAction
+            IHeroGrabItemsLogicAction heroGrabItemsLogicAction,
+            IHeroItemEffectLogicAction heroItemEffectLogicAction
             )
         {
             this.eventDispatcher = eventDispatcher;
@@ -38,6 +42,7 @@ namespace Barista.Shared.Logic
             this.heroMovementActions = heroMovementActions;
             this.enemyMovementActions = enemyMovementActions;
             this.heroGrabItemsLogicAction = heroGrabItemsLogicAction;
+            this.heroItemEffectLogicAction = heroItemEffectLogicAction;
 
             GenerateStates();
             Link();
@@ -73,7 +78,7 @@ namespace Barista.Shared.Logic
 
             eventDispatcher.Subscribe((UseItemInEvent ev) =>
             {
-              
+                UseHeroItem(ev.ItemType);
             });
         }
 
@@ -119,6 +124,18 @@ namespace Barista.Shared.Logic
             eventDispatcher.Dispatch(new EndTurnOutEvent());
 
             stateMachine.Next(LevelLogicState.WaitingForPlayerAction);
+        }
+
+        private void UseHeroItem(ItemType itemType)
+        {
+            bool needsTarget = heroItemEffectLogicAction.ItemEffectNeedsTarget(itemType);
+
+            if (needsTarget)
+            {
+                IReadOnlyList<Int2> targets = heroItemEffectLogicAction.GetItemAvaliableTargets(itemType);
+
+                eventDispatcher.Dispatch(new ItemNeedsTargetSelectionOutEvent(targets));
+            }
         }
 
         private void PerfromHeroTurn()

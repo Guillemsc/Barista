@@ -31,7 +31,6 @@ namespace Barista.Shared.EntryPoints
             LevelState levelState = new LevelState();
             InputState inputState = new InputState();
 
-            // Factories
             EnemyBrainFactory enemyBrainFactory = new EnemyBrainFactory();
             ItemFactory itemFactory = new ItemFactory();
 
@@ -54,12 +53,17 @@ namespace Barista.Shared.EntryPoints
             PathFactory pathFactory = new PathFactory(pathfindingUtils);
             ExpansionFactory expansionFactory = new ExpansionFactory(pathfindingUtils);
 
+            // Factories
             enemyBrainFactory.Init(
                 environmentEntityRepository,
                 heroEntityRepository,
                 enemyEntityRepository,
                 pathFactory,
                 levelState
+                );
+
+            itemFactory.Init(
+                expansionFactory
                 );
 
             // Actions
@@ -97,6 +101,11 @@ namespace Barista.Shared.EntryPoints
                 levelState
                 );
 
+            IHeroItemEffectLogicAction heroItemEffectLogicAction = new HeroItemEffectLogicAction(
+                heroEntityRepository,
+                levelState
+                );
+
             // Logic
             levelLogic = new LevelLogic(
                 eventDispatcher,
@@ -104,7 +113,8 @@ namespace Barista.Shared.EntryPoints
                 levelSetupLogicActions,
                 heroMovementActions,
                 enemyMovementActions,
-                heroGrabItemActions
+                heroGrabItemActions,
+                heroItemEffectLogicAction
                 );
         }
 

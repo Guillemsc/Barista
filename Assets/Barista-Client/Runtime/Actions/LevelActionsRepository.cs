@@ -10,6 +10,7 @@
         public IHeroMovedAction HeroMovedAction { get; }
         public IEnemyMovedAction EnemyMovedAction { get; }
         public IHeroGrabbedItemAction HeroGrabbedItemAction { get; }
+        public IItemTargetSelection ItemTargetSelection { get; }
 
         public LevelActionsRepository(
             ISetupLevelAction setupLevelAction,
@@ -19,7 +20,8 @@
             IEndTurnAction endTurnAction,
             IHeroMovedAction heroMovedAction,
             IEnemyMovedAction enemyMovedAction,
-            IHeroGrabbedItemAction heroGrabbedItemAction
+            IHeroGrabbedItemAction heroGrabbedItemAction,
+            IItemTargetSelection itemTargetSelection
             )
         {
             SetupLevelAction = setupLevelAction;
@@ -30,6 +32,7 @@
             HeroMovedAction = heroMovedAction;
             EnemyMovedAction = enemyMovedAction;
             HeroGrabbedItemAction = heroGrabbedItemAction;
+            ItemTargetSelection = itemTargetSelection;
         }
     }
 }

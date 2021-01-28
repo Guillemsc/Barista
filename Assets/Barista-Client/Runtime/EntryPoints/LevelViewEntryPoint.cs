@@ -169,6 +169,9 @@ namespace Barista.Client.EntryPoints
                     levelTimelines,
                     itemEntityViewRepository,
                     levelUIReferences.ItemsViewUI
+                    ),
+
+                new ItemTargetSelection(
                     )
                 );
 
@@ -247,6 +250,13 @@ namespace Barista.Client.EntryPoints
                     ev.HeroEntity,
                     ev.ItemEntity,
                     ev.TotalStacks
+                    );
+            });
+
+            eventDispatcher.Subscribe((ItemNeedsTargetSelectionOutEvent ev) =>
+            {
+                levelActionsRepository.ItemTargetSelection.Invoke(
+                    ev.AvaliableTargetPositions
                     );
             });
 
