@@ -6,12 +6,12 @@ namespace Barista.Client.Instructions.UI.Item
 {
     public class SetItemEntityUIStacksInstruction : InstantInstruction
     {
-        private readonly ItemsViewUI itemsViewUI;
+        private readonly ItemsUIView itemsViewUI;
         private readonly ItemType itemType;
         private readonly int itemStacks;
 
         public SetItemEntityUIStacksInstruction(
-            ItemsViewUI itemsViewUI,
+            ItemsUIView itemsViewUI,
             ItemType itemType,
             int itemStacks
             )

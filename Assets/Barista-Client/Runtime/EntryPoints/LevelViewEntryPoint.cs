@@ -4,6 +4,7 @@ using Barista.Client.Contexts.LevelUI;
 using Barista.Client.Input;
 using Barista.Client.Libraries;
 using Barista.Client.References.LevelUI;
+using Barista.Client.Signals;
 using Barista.Client.State;
 using Barista.Client.Timelines;
 using Barista.Client.View.Entities.Enemy;
@@ -11,6 +12,7 @@ using Barista.Client.View.Entities.Environment;
 using Barista.Client.View.Entities.Hero;
 using Barista.Client.View.Entities.Item;
 using Barista.Shared.Events;
+using Barista.Shared.Logic.Items;
 using Juce.Core.Direction;
 using Juce.Core.EntryPoint;
 using Juce.Core.Events;
@@ -72,9 +74,15 @@ namespace Barista.Client.EntryPoints
             LevelUIReferences levelUIReferences = levelUIContextReferences.LevelUIReferences;
 
             // Signals
+            ItemViewUIClickedSignal itemViewUIClickedSignal = new ItemViewUIClickedSignal();
+            AddCleanUpAction(() => itemViewUIClickedSignal.CleanUp());
 
             // Ui
-            levelUIReferences.ItemsViewUI.Init(itemsLibrary, levelUICanvases.MainCanvas);
+            levelUIReferences.ItemsViewUI.Init(
+                itemsLibrary, 
+                levelUICanvases.MainCanvas, 
+                itemViewUIClickedSignal
+                );
 
             // Factories
             IEnvironmentEntityViewFactory environmentEntityViewFactory = new EnvironmentEntityViewFactory(
@@ -168,6 +176,7 @@ namespace Barista.Client.EntryPoints
                 eventDispatcher,
                 levelActionsRepository,
                 movementInput,
+                itemViewUIClickedSignal,
                 turnState
                 );
         }
@@ -176,6 +185,7 @@ namespace Barista.Client.EntryPoints
             IEventDispatcher eventDispatcher,
             LevelActionsRepository levelActionsRepository,
             MovementInput movementInput,
+            ItemViewUIClickedSignal itemViewUIClickedSignal,
             State<bool> turnState
             )
         {
@@ -238,6 +248,13 @@ namespace Barista.Client.EntryPoints
                     ev.ItemEntity,
                     ev.TotalStacks
                     );
+            });
+
+            // Signals
+
+            itemViewUIClickedSignal.Register((ItemType itemType) =>
+            {
+                eventDispatcher.Dispatch(new UseItemInEvent(itemType));
             });
 
             // Input

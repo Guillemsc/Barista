@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d31b62ec9d586a4e94389d9071559ca, type: 3}
   m_Name: FlowScript
   m_EditorClassIdentifier: 
-  _serializedGraph: '{"type":"FlowCanvas.FlowScript","nodes":[],"connections":[],"canvasGroups":[],"localBlackboard":{"_variables":{}}}'
+  _serializedGraph: '{"type":"FlowCanvas.FlowScript","nodes":[{"_simplexNode":{},"_position":{"x":809.0,"y":554.0},"$type":"FlowCanvas.Nodes.SimplexNodeWrapper`1[[FlowCanvas.Nodes.FloatAdd,
+    ParadoxNotion, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"},{"_subGraph":{},"_position":{"x":613.0,"y":459.0},"$type":"FlowCanvas.Nodes.FlowNestedFlow"}],"connections":[],"canvasGroups":[],"localBlackboard":{"_variables":{}}}'
   _objectReferences: []
   _graphSource:
     _version: 3.16
     _category: 
     _comments: 
-    _translation: {x: 0, y: 0}
+    _translation: {x: 140, y: -13}
     _zoomFactor: 1
   _haltSerialization: 0

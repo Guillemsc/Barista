@@ -6,8 +6,8 @@ namespace Barista.Client.References.LevelUI
     [System.Serializable]
     public class LevelUIReferences
     {
-        [SerializeField] private ItemsViewUI itemsViewUI = default;
+        [SerializeField] private ItemsUIView itemsViewUI = default;
 
-        public ItemsViewUI ItemsViewUI => itemsViewUI;
+        public ItemsUIView ItemsViewUI => itemsViewUI;
     }
 }

@@ -13,12 +13,12 @@ namespace Barista.Client.Actions
     {
         private readonly LevelTimelines levelTimelines;
         private readonly ItemEntityViewRepository itemEntityViewRepository;
-        private readonly ItemsViewUI itemsViewUI;
+        private readonly ItemsUIView itemsViewUI;
 
         public HeroGrabbedItemAction(
             LevelTimelines levelTimelines,
             ItemEntityViewRepository itemEntityViewRepository,
-            ItemsViewUI itemsViewUI
+            ItemsUIView itemsViewUI
             )
         {
             this.levelTimelines = levelTimelines;

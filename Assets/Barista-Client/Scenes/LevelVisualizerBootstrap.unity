@@ -131,7 +131,7 @@ GameObject:
   m_Component:
   - component: {fileID: 419435928}
   - component: {fileID: 419435929}
-  - component: {fileID: 419435931}
+  - component: {fileID: 419435930}
   m_Layer: 0
   m_Name: Bootstrap
   m_TagString: Untagged
@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: e25e802b4d71c73428da3a3128f2becd, type: 2}
---- !u!114 &419435931
+--- !u!114 &419435930
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -175,7 +175,193 @@ MonoBehaviour:
   m_GameObject: {fileID: 419435927}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e11619b75ca20444eb676a69508ea27c, type: 3}
+  m_Script: {fileID: 11500000, guid: 934f8d6e2d0e49041be97dfef6fb1314, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  logicGraph: {fileID: 11400000, guid: a4aed1ef161f2a74db576d9beb5dc848, type: 2}
+  logicGraph: {fileID: 11400000, guid: 6800452009b753b40b77d99506635795, type: 2}
+--- !u!1 &1882674391
+GameObject:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1882674393}
+  - component: {fileID: 1882674392}
+  m_Layer: 0
+  m_Name: UndoProRecords
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1882674392
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1882674391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efa53029e0a62304caf81173265515b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  undoProRecords: []
+  undoState:
+    redoRecords: []
+    undoRecords:
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Moved Node
+    - Moved Node
+    - Selection Change
+    - Moved Node
+    - Moved Node
+    - Moved Node
+    - Moved Node
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Moved Node
+    - Moved Node
+    - Moved Node
+    - Moved Node
+    - Selection Change
+    - Selection Change
+    - Moved Node
+    - Duplicate Node
+    - Selection Change
+    - Duplicate Node
+    - Moved Node
+    - Delete Node
+    - Selection Change
+    - Destroy Object
+    - Selection Change
+    - Selection Change
+    - Moved Node
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Moved Node
+    - Moved Node
+    - Create Node
+    - Create Node
+    - Inspector
+    - Connect Port
+    - Selection Change
+    - Moved Node
+    - Moved Node
+    - Moved Node
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Connect Port
+    - Connect Port
+    - Connect Port
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Connect Port
+    - Connect Port
+    - Selection Change
+    - Moved Node
+    - Moved Node
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Connect Port
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Connect Port
+    - Connect Port
+    - Create Node
+    - Connect Port
+    - Selection Change
+    - Moved Node
+    - Connect Port
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Moved Node
+    - Moved Node
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Selection Change
+    - Inspector
+    - Selection Change
+    - Selection Change
+    - Remove MonoBehaviour
+    - Add GraphTestOld
+    - Inspector
+    - Connect Port
+    - Selection Change
+--- !u!4 &1882674393
+Transform:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1882674391}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
