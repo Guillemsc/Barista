@@ -15,6 +15,7 @@ using Barista.Client.View.Entities.Hero;
 using Barista.Client.View.Entities.Item;
 using Barista.Shared.Events;
 using Barista.Shared.Logic.Items;
+using Juce.Core.Containers;
 using Juce.Core.Direction;
 using Juce.Core.EntryPoint;
 using Juce.Core.Events;
@@ -202,6 +203,12 @@ namespace Barista.Client.EntryPoints
                 targetSelectorViewRepository
                 );
 
+            IItemTargetSelectedAction itemTargetSelectedAction = new ItemTargetSelectedAction(
+                levelTimelines,
+                turnActionsState,
+                targetSelectorViewRepository
+                );
+
             initialActionState.Init(
                 levelActionsRepository,
                 setupLevelAction
@@ -219,7 +226,8 @@ namespace Barista.Client.EntryPoints
                 );
 
             itemInputActionState.Init(
-                levelActionsRepository
+                levelActionsRepository,
+                itemTargetSelectedAction
                 );
 
             Link(
@@ -227,6 +235,7 @@ namespace Barista.Client.EntryPoints
                 levelActionsRepository,
                 movementInput,
                 itemViewUIClickedSignal,
+                targetSelectorClickedSignal,
                 turnState
                 );
 
@@ -238,6 +247,7 @@ namespace Barista.Client.EntryPoints
             LevelActionsRepository levelActionsRepository,
             MovementInput movementInput,
             ItemViewUIClickedSignal itemViewUIClickedSignal,
+            TargetSelectorSelectedSignal targetSelectorClickedSignal,
             State<bool> turnState
             )
         {
@@ -376,6 +386,20 @@ namespace Barista.Client.EntryPoints
             itemViewUIClickedSignal.Register((ItemType itemType) =>
             {
                 eventDispatcher.Dispatch(new UseItemInEvent(itemType));
+            });
+
+            targetSelectorClickedSignal.Register((Int2 gridPosition) =>
+            {
+                bool found = levelActionsRepository.TryGetAction(out IItemTargetSelectedAction action);
+
+                if (!found)
+                {
+                    return;
+                }
+
+                action.Invoke(gridPosition);
+
+                eventDispatcher.Dispatch(new ItemTargetSelectedInEvent(gridPosition));
             });
 
             // Input

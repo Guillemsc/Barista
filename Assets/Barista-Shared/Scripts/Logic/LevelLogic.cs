@@ -78,7 +78,14 @@ namespace Barista.Shared.Logic
 
             eventDispatcher.Subscribe((UseItemInEvent ev) =>
             {
+                stateMachine.Next(LevelLogicState.StartTurn);
+
                 UseHeroItem(ev.ItemType);
+            });
+
+            eventDispatcher.Subscribe((ItemTargetSelectedInEvent ev) =>
+            {
+                stateMachine.Next(LevelLogicState.PerformTurn);
             });
         }
 

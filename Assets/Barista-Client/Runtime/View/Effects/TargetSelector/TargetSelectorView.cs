@@ -2,6 +2,7 @@
 using Juce.Core.Containers;
 using Juce.CoreUnity.Pointer;
 using Juce.Feedbacks;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -42,11 +43,11 @@ namespace Barista.Client.View.Effects.TargetSelector
             showFeedback.Play();
         }
 
-        public void Hide()
+        public Task Hide()
         {
             showFeedback.Kill();
 
-            hideFeedback.Play();
+            return hideFeedback.Play();
         }
 
         private void OnClick(PointerEventData ev)

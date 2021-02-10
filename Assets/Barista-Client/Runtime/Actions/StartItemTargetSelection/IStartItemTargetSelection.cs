@@ -1,5 +1,4 @@
-﻿using Barista.Shared.Entities.Environment;
-using Juce.Core.Containers;
+﻿using Juce.Core.Containers;
 using System.Collections.Generic;
 
 namespace Barista.Client.Actions

@@ -4,10 +4,8 @@ using Barista.Client.Instructions.TargetSelector;
 using Barista.Client.Timelines;
 using Barista.Client.View.Effects.TargetSelector;
 using Barista.Client.View.Entities.Environment;
-using Barista.Shared.Entities.Environment;
 using Juce.Core.Containers;
 using Juce.Core.Sequencing;
-using System;
 using System.Collections.Generic;
 
 namespace Barista.Client.Actions
