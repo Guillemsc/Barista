@@ -11,7 +11,7 @@ namespace Barista.Client.View.Entities.Item
 
         public Transform Transform => gameObject.transform;
 
-        public void Construct(ItemType typeId, int instanceId)
+        public void Init(ItemType typeId, int instanceId)
         {
             TypeId = typeId;
             InstanceId = instanceId;

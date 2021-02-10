@@ -34,7 +34,7 @@ namespace Barista.Client.View.Entities.Environment
             DisableGameObjects();
         }
 
-        public void Construct(string typeId, int instanceId)
+        public void Init(string typeId, int instanceId)
         {
             Contract.IsNotNull(heroEntitySpawnView);
 

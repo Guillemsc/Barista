@@ -29,7 +29,7 @@ namespace Barista.Client.View.Entities.Hero
 
             HeroEntityView newHeroEntityView = heroEntityView.InstantiateGameObjectAndGet();
 
-            newHeroEntityView.Construct(typeId, instanceId);
+            newHeroEntityView.Init(typeId, instanceId);
 
             return newHeroEntityView;
         }

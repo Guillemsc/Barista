@@ -18,7 +18,7 @@ namespace Barista.Shared.Logic.Pathfinding
             this.pathfindingUtils = pathfindingUtils;
         }
 
-        public IReadOnlyList<Int2> Expand(Int2 origin, int range)
+        public List<Int2> Expand(Int2 origin, int range)
         {
             this.origin = origin;
             this.range = range;
@@ -67,7 +67,7 @@ namespace Barista.Shared.Logic.Pathfinding
             return ret;
         }
 
-        private IReadOnlyList<Int2> GenerateResult(IReadOnlyDictionary<Int2, PathfindingNode<Int2>> nodes)
+        private List<Int2> GenerateResult(IReadOnlyDictionary<Int2, PathfindingNode<Int2>> nodes)
         {
             return nodes.Keys.ToList();
         }

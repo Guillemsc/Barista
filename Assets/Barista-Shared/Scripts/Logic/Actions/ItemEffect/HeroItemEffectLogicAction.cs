@@ -56,7 +56,11 @@ namespace Barista.Shared.Logic
                 return null;
             }
 
-            return item.EffectRange.GetRangePositions(heroEntity.GridPosition);
+            List<Int2> positions = item.EffectRange.GetRangePositions(heroEntity.GridPosition);
+
+            positions.Remove(heroEntity.GridPosition);
+
+            return positions;
         }
 
         public void ApplyItemEffect(ItemType itemType, Int2 targetPosition)

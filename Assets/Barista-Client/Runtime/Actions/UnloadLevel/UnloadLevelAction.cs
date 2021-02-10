@@ -1,6 +1,5 @@
 ﻿using Barista.Client.Input;
 using Barista.Client.Instructions.Environment;
-using Barista.Client.Instructions.Level;
 using Barista.Client.Timelines;
 using Barista.Client.View.Entities.Environment;
 using Juce.Core.Sequencing;
@@ -29,8 +28,6 @@ namespace Barista.Client.Actions
             InstructionsSequence sequence = new InstructionsSequence();
 
             sequence.Append(new UnloadAllEnvironmentEntityViewsInstruction(environmentEntityViewRepository));
-
-            sequence.Append(new InputSetActiveInstruction(mainInput, false));
 
             levelTimelines.MainTimeline.Play(sequence);
         }

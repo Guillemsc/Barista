@@ -3,7 +3,7 @@ using Barista.Shared.Entities.Item;
 
 namespace Barista.Client.Actions
 {
-    public interface IHeroGrabbedItemAction
+    public interface IHeroGrabbedItemAction : IAction
     {
         void Invoke(
             HeroEntity heroEntity,

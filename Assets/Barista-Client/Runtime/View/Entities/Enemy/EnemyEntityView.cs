@@ -10,7 +10,7 @@ namespace Barista.Client.View.Entities.Enemy
 
         public Transform Transform => gameObject.transform;
 
-        public void Construct(string typeId, int instanceId)
+        public void Init(string typeId, int instanceId)
         {
             TypeId = typeId;
             InstanceId = instanceId;

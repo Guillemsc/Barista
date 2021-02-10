@@ -1,7 +1,7 @@
 ﻿
 namespace Barista.Client.Actions
 {
-    public interface IEndTurnAction
+    public interface IEndTurnAction : IAction
     {
         void Invoke();
     }

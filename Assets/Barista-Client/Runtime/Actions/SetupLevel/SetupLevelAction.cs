@@ -1,10 +1,9 @@
-﻿using Barista.Client.Input;
+﻿using Barista.Client.ActionsSatates;
 using Barista.Client.Instructions.Enemy;
 using Barista.Client.Instructions.Entity;
 using Barista.Client.Instructions.Environment;
 using Barista.Client.Instructions.Hero;
 using Barista.Client.Instructions.Item;
-using Barista.Client.Instructions.Level;
 using Barista.Client.Timelines;
 using Barista.Client.View.Entities.Enemy;
 using Barista.Client.View.Entities.Environment;
@@ -22,27 +21,27 @@ namespace Barista.Client.Actions
     public class SetupLevelAction : ISetupLevelAction
     {
         private readonly LevelTimelines levelTimelines;
+        private readonly IActionsState turnActionsState;
         private readonly EnvironmentEntityViewRepository environmentEntityViewRepository;
         private readonly HeroEntityViewRepository heroEntityViewRepository;
         private readonly EnemyEntityViewRepository enemyEntityViewRepository;
         private readonly ItemEntityViewRepository itemEntityViewRepository;
-        private readonly MainInput mainInput;
 
         public SetupLevelAction(
             LevelTimelines levelTimelines,
+            IActionsState turnActionsState,
             EnvironmentEntityViewRepository environmentEntityViewRepository,
             HeroEntityViewRepository heroEntityViewRepository,
             EnemyEntityViewRepository enemyEntityViewRepository,
-            ItemEntityViewRepository itemEntityViewRepository,
-            MainInput mainInput
+            ItemEntityViewRepository itemEntityViewRepository
             )
         {
             this.levelTimelines = levelTimelines;
+            this.turnActionsState = turnActionsState;
             this.environmentEntityViewRepository = environmentEntityViewRepository;
             this.heroEntityViewRepository = heroEntityViewRepository;
             this.enemyEntityViewRepository = enemyEntityViewRepository;
             this.itemEntityViewRepository = itemEntityViewRepository;
-            this.mainInput = mainInput;
         }
 
         public void Invoke(
@@ -67,7 +66,7 @@ namespace Barista.Client.Actions
                 ));
 
             sequence.Append(new SetEntityViewGridPositionInstruction(
-                environmentEntityViewRepository.GetLazy(environmentEntity.InstanceId),
+                environmentEntityViewRepository.LoadedEnvironmentLazy,
                 heroEntityViewRepository.GetLazyAsMovable(heroEntity.InstanceId),
                 heroEntity.GridPosition
                 ));
@@ -81,7 +80,7 @@ namespace Barista.Client.Actions
                     ));
 
                 sequence.Append(new SetEntityViewGridPositionInstruction(
-                    environmentEntityViewRepository.GetLazy(environmentEntity.InstanceId),
+                    environmentEntityViewRepository.LoadedEnvironmentLazy,
                     enemyEntityViewRepository.GetLazyAsMovable(enemyEntity.InstanceId),
                     enemyEntity.GridPosition
                     ));
@@ -96,15 +95,15 @@ namespace Barista.Client.Actions
                     ));
 
                 sequence.Append(new SetEntityViewGridPositionInstruction(
-                    environmentEntityViewRepository.GetLazy(environmentEntity.InstanceId),
+                    environmentEntityViewRepository.LoadedEnvironmentLazy,
                     itemEntityViewRepository.GetLazyAsMovable(itemEntity.InstanceId),
                     itemEntity.GridPosition
                     ));
             }
 
-            sequence.Append(new InputSetActiveInstruction(mainInput, true));
-
             levelTimelines.MainTimeline.Play(sequence);
+
+            turnActionsState.Enable();
         }
     }
 }

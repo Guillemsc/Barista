@@ -30,7 +30,7 @@ namespace Barista.Client.View.Entities.Item
 
             ItemEntityView newItemEntityView = itemEntityView.InstantiateGameObjectAndGet();
 
-            newItemEntityView.Construct(typeId, instanceId);
+            newItemEntityView.Init(typeId, instanceId);
 
             return newItemEntityView;
         }

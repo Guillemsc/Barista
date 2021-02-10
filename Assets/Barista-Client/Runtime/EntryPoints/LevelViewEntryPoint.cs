@@ -1,5 +1,6 @@
 ﻿using System;
 using Barista.Client.Actions;
+using Barista.Client.ActionsSatates;
 using Barista.Client.Contexts.LevelUI;
 using Barista.Client.Input;
 using Barista.Client.Libraries;
@@ -7,6 +8,7 @@ using Barista.Client.References.LevelUI;
 using Barista.Client.Signals;
 using Barista.Client.State;
 using Barista.Client.Timelines;
+using Barista.Client.View.Effects.TargetSelector;
 using Barista.Client.View.Entities.Enemy;
 using Barista.Client.View.Entities.Environment;
 using Barista.Client.View.Entities.Hero;
@@ -30,6 +32,7 @@ namespace Barista.Client.EntryPoints
         private readonly HeroesLibrary heroesLibrary;
         private readonly EnemiesLibrary enemiesLibrary;
         private readonly ItemsLibrary itemsLibrary;
+        private readonly EffectsLibrary effectsLibrary;
 
         public LevelViewEntryPoint(
             LevelViewEntryPointSettings settings,
@@ -37,7 +40,8 @@ namespace Barista.Client.EntryPoints
             EnvironmentsLibrary environmentsLibrary,
             HeroesLibrary heroesLibrary,
             EnemiesLibrary enemiesLibrary,
-            ItemsLibrary itemsLibrary
+            ItemsLibrary itemsLibrary,
+            EffectsLibrary effectsLibrary
             )
         {
             this.settings = settings;
@@ -46,6 +50,7 @@ namespace Barista.Client.EntryPoints
             this.heroesLibrary = heroesLibrary;
             this.enemiesLibrary = enemiesLibrary;
             this.itemsLibrary = itemsLibrary;
+            this.effectsLibrary = effectsLibrary;
         }
 
         protected override void OnExecute()
@@ -61,6 +66,7 @@ namespace Barista.Client.EntryPoints
 
             // Input
             MainInput mainInput = new MainInput();
+            mainInput.Enable();
 
             MousePositionInput mousePositionInput = new MousePositionInput(mainInput);
             AddCleanUpAction(() => mousePositionInput.CleanUp());
@@ -76,6 +82,9 @@ namespace Barista.Client.EntryPoints
             // Signals
             ItemViewUIClickedSignal itemViewUIClickedSignal = new ItemViewUIClickedSignal();
             AddCleanUpAction(() => itemViewUIClickedSignal.CleanUp());
+
+            TargetSelectorSelectedSignal targetSelectorClickedSignal = new TargetSelectorSelectedSignal();
+            AddCleanUpAction(() => targetSelectorClickedSignal.CleanUp());
 
             // Ui
             levelUIReferences.ItemsViewUI.Init(
@@ -101,6 +110,11 @@ namespace Barista.Client.EntryPoints
                 itemsLibrary
                 );
 
+            ITargetSelectorViewFactory targetSelectorViewFactory = new TargetSelectorViewFactory(
+                effectsLibrary,
+                targetSelectorClickedSignal
+                );
+
             // Repositories
             EnvironmentEntityViewRepository environmentEntityViewRepository = new EnvironmentEntityViewRepository(
                 environmentEntityViewFactory
@@ -118,61 +132,94 @@ namespace Barista.Client.EntryPoints
                 itemEntityViewFactory
                 );
 
+            TargetSelectorViewRepository targetSelectorViewRepository = new TargetSelectorViewRepository(
+                targetSelectorViewFactory
+                );
+
             LevelTimelines levelTimelines = new LevelTimelines();
             tickablesService.AddTickable(levelTimelines);
             AddCleanUpAction(() => tickablesService.RemoveTickable(levelTimelines));
 
+            LevelActionsRepository levelActionsRepository = new LevelActionsRepository();
+
+            // Actions states
+            InitialActionsState initialActionState = new InitialActionsState();
+            TurnActionsState turnActionsState = new TurnActionsState();
+            ItemInputActionsState itemInputActionState = new ItemInputActionsState();
+
             // Actions
-            LevelActionsRepository levelActionsRepository = new LevelActionsRepository(
-                new SetupLevelAction(
+            ISetupLevelAction setupLevelAction = new SetupLevelAction(
+                   levelTimelines,
+                   turnActionsState,
+                   environmentEntityViewRepository,
+                   heroEntityViewRepository,
+                   enemyEntityViewRepository,
+                   itemEntityViewRepository
+                   );
+
+            IUnloadLevelAction unloadLevelAction = new UnloadLevelAction(
                     levelTimelines,
                     environmentEntityViewRepository,
-                    heroEntityViewRepository,
-                    enemyEntityViewRepository,
-                    itemEntityViewRepository,
                     mainInput
-                    ),
+                    );
 
-                new UnloadLevelAction(
-                    levelTimelines,
-                    environmentEntityViewRepository,
-                    mainInput
-                    ),
-
-                new LevelCompletedAction(
+            ILevelCompletedAction levelCompletedAction = new LevelCompletedAction(
                     levelTimelines
-                    ),
+                    );
 
-                new StartTurnAction(
+            IStartTurnAction startTurnAction = new StartTurnAction(
                     levelTimelines,
                     turnState
-                    ),
+                    );
 
-                new EndTurnAction(
+            IEndTurnAction endTurnAction = new EndTurnAction(
                     levelTimelines,
                     turnState
-                    ),
+                    );
 
-                new HeroMovedAction(
+            IHeroMovedAction heroMovedAction = new HeroMovedAction(
                     levelTimelines,
                     environmentEntityViewRepository,
                     heroEntityViewRepository
-                    ),
+                    );
 
-                new EnemyMovedAction(
+            IEnemyMovedAction enemyMovedAction = new EnemyMovedAction(
                     levelTimelines,
                     environmentEntityViewRepository,
                     enemyEntityViewRepository
-                    ),
+                    );
 
-                new HeroGrabbedItemAction(
+            IHeroGrabbedItemAction heroGrabbedItemAction = new HeroGrabbedItemAction(
                     levelTimelines,
                     itemEntityViewRepository,
                     levelUIReferences.ItemsViewUI
-                    ),
+                    );
 
-                new ItemTargetSelection(
-                    )
+            IStartItemTargetSelection itemTargetSelection = new StartItemTargetSelection(
+                levelTimelines,
+                itemInputActionState,
+                environmentEntityViewRepository,
+                targetSelectorViewRepository
+                );
+
+            initialActionState.Init(
+                levelActionsRepository,
+                setupLevelAction
+                );
+
+            turnActionsState.Init(
+                levelActionsRepository,
+                levelCompletedAction,
+                startTurnAction,
+                endTurnAction,
+                heroMovedAction,
+                enemyMovedAction,
+                heroGrabbedItemAction,
+                itemTargetSelection
+                );
+
+            itemInputActionState.Init(
+                levelActionsRepository
                 );
 
             Link(
@@ -182,6 +229,8 @@ namespace Barista.Client.EntryPoints
                 itemViewUIClickedSignal,
                 turnState
                 );
+
+            initialActionState.Enable();
         }
 
         private void Link(
@@ -193,10 +242,16 @@ namespace Barista.Client.EntryPoints
             )
         {
             // Actions
-
             eventDispatcher.Subscribe((SetupLevelOutEvent ev) =>
             {
-                levelActionsRepository.SetupLevelAction.Invoke(
+                bool found = levelActionsRepository.TryGetAction(out ISetupLevelAction action);
+
+                if(!found)
+                {
+                    return;
+                }
+
+                action.Invoke(
                     ev.EnvironmentEntity,
                     ev.HeroEntity,
                     ev.EnemyEntities,
@@ -208,27 +263,62 @@ namespace Barista.Client.EntryPoints
             {
                 if (!settings.IsVisualizer)
                 {
-                    levelActionsRepository.LevelCompletedAction.Invoke();
+                    bool found = levelActionsRepository.TryGetAction(out ILevelCompletedAction action);
+
+                    if (!found)
+                    {
+                        return;
+                    }
+
+                    action.Invoke();
                 }
                 else
                 {
-                    levelActionsRepository.UnloadLevelAction.Invoke();
+                    bool found = levelActionsRepository.TryGetAction(out IUnloadLevelAction action);
+
+                    if (!found)
+                    {
+                        return;
+                    }
+
+                    action.Invoke();
                 }
             });
 
             eventDispatcher.Subscribe((StartTurnOutEvent ev) =>
             {
-                levelActionsRepository.StartTurnAction.Invoke();
+                bool found = levelActionsRepository.TryGetAction(out IStartTurnAction action);
+
+                if (!found)
+                {
+                    return;
+                }
+
+                action.Invoke();
             });
 
             eventDispatcher.Subscribe((EndTurnOutEvent ev) =>
             {
-                levelActionsRepository.EndTurnAction.Invoke();
+                bool found = levelActionsRepository.TryGetAction(out IEndTurnAction action);
+
+                if (!found)
+                {
+                    return;
+                }
+
+                action.Invoke();
             });
 
             eventDispatcher.Subscribe((HeroMovedOutEvent ev) =>
             {
-                levelActionsRepository.HeroMovedAction.Invoke(
+                bool found = levelActionsRepository.TryGetAction(out IHeroMovedAction action);
+
+                if (!found)
+                {
+                    return;
+                }
+
+                action.Invoke(
                     ev.EnvironmentEntity,
                     ev.HeroEntity, 
                     ev.Path
@@ -237,7 +327,14 @@ namespace Barista.Client.EntryPoints
 
             eventDispatcher.Subscribe((EnemyMovedOutEvent ev) =>
             {
-                levelActionsRepository.EnemyMovedAction.Invoke(
+                bool found = levelActionsRepository.TryGetAction(out IEnemyMovedAction action);
+
+                if (!found)
+                {
+                    return;
+                }
+
+                action.Invoke(
                     ev.EnvironmentEntity,
                     ev.EnemyEntity,
                     ev.Path
@@ -246,7 +343,14 @@ namespace Barista.Client.EntryPoints
 
             eventDispatcher.Subscribe((HeroGrabbedItemOutEvent ev) =>
             {
-                levelActionsRepository.HeroGrabbedItemAction.Invoke(
+                bool found = levelActionsRepository.TryGetAction(out IHeroGrabbedItemAction action);
+
+                if (!found)
+                {
+                    return;
+                }
+
+                action.Invoke(
                     ev.HeroEntity,
                     ev.ItemEntity,
                     ev.TotalStacks
@@ -255,7 +359,14 @@ namespace Barista.Client.EntryPoints
 
             eventDispatcher.Subscribe((ItemNeedsTargetSelectionOutEvent ev) =>
             {
-                levelActionsRepository.ItemTargetSelection.Invoke(
+                bool found = levelActionsRepository.TryGetAction(out IStartItemTargetSelection action);
+
+                if (!found)
+                {
+                    return;
+                }
+
+                action.Invoke(
                     ev.AvaliableTargetPositions
                     );
             });

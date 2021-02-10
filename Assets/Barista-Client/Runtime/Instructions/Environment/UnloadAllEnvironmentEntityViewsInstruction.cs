@@ -15,7 +15,7 @@ namespace Barista.Client.Instructions.Environment
 
         protected override void OnInstantStart()
         {
-            environmentEntityViewRepository.DespawnAll();
+            environmentEntityViewRepository.Despawn();
         }
     }
 }

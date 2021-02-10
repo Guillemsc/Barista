@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Barista.Client.Actions
 {
-    public interface IEnemyMovedAction
+    public interface IEnemyMovedAction : IAction
     {
         void Invoke(
             EnvironmentEntity environmentEntity,

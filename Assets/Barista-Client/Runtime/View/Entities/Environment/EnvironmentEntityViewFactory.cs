@@ -29,7 +29,7 @@ namespace Barista.Client.View.Entities.Environment
 
             EnvironmentEntityView newEnvironmentEntityView = environmentEntityView.InstantiateGameObjectAndGet();
 
-            newEnvironmentEntityView.Construct(typeId, instanceId);
+            newEnvironmentEntityView.Init(typeId, instanceId);
 
             return newEnvironmentEntityView;
         }

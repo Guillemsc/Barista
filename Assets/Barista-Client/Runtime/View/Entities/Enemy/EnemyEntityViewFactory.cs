@@ -29,7 +29,7 @@ namespace Barista.Client.View.Entities.Enemy
 
             EnemyEntityView newEnemyEntityView = enemyEntityView.InstantiateGameObjectAndGet();
 
-            newEnemyEntityView.Construct(typeId, instanceId);
+            newEnemyEntityView.Init(typeId, instanceId);
 
             return newEnemyEntityView;
         }

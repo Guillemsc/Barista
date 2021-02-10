@@ -18,7 +18,7 @@ namespace Barista.Shared.Logic.Range
             this.expansionFactory = expansionFactory;
         }
 
-        public IReadOnlyList<Int2> GetRangePositions(Int2 initialPosition)
+        public List<Int2> GetRangePositions(Int2 initialPosition)
         {
             return expansionFactory.Expand(initialPosition, range);
         }

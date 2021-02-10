@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Barista.Client.Actions
 {
-    public interface ISetupLevelAction
+    public interface ISetupLevelAction : IAction
     {
         void Invoke(
             EnvironmentEntity environmentEntity,

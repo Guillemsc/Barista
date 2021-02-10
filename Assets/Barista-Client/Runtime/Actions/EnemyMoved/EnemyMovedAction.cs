@@ -32,7 +32,7 @@ namespace Barista.Client.Actions
             InstructionsSequence sequence = new InstructionsSequence();
 
             sequence.Append(new MoveEntityViewAlongPathInstruction(
-                environmentEntityViewRepository.GetLazy(environmentEntity.InstanceId),
+                environmentEntityViewRepository.LoadedEnvironmentLazy,
                 enemyEntityViewRepository.GetLazyAsMovable(enemyEntity.InstanceId),
                 path
                 ));

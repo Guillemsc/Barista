@@ -134,7 +134,7 @@ namespace Barista.Shared.Logic
             {
                 IReadOnlyList<Int2> targets = heroItemEffectLogicAction.GetItemAvaliableTargets(itemType);
 
-                eventDispatcher.Dispatch(new ItemNeedsTargetSelectionOutEvent(targets));
+                eventDispatcher.Dispatch(new ItemNeedsTargetSelectionOutEvent(itemType, targets));
             }
         }
 
