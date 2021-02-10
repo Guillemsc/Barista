@@ -14,7 +14,7 @@ namespace Barista.Shared.Logic.Items
 
         public IItem Create(ItemType type)
         {
-            return new Item(type, new AttackItemEffect(), new CircularRange(1, expansionFactory));
+            return new EnemyTargetItem(type, new CircularRange(1, expansionFactory), new AttackEnemyItemEffect());
         }
     }
 }

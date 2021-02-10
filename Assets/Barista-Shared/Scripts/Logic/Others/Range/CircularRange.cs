@@ -20,7 +20,7 @@ namespace Barista.Shared.Logic.Range
 
         public List<Int2> GetRangePositions(Int2 initialPosition)
         {
-            return expansionFactory.Expand(initialPosition, range);
+            return expansionFactory.Expand(initialPosition, false, range);
         }
 
         public bool HasRange(Int2 initialPosition, Int2 finalPosition)

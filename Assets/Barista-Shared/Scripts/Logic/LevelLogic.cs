@@ -78,13 +78,25 @@ namespace Barista.Shared.Logic
 
             eventDispatcher.Subscribe((UseItemInEvent ev) =>
             {
-                stateMachine.Next(LevelLogicState.StartTurn);
+                bool canUse = CanUseHeroItem(ev.ItemType, out bool needsTarget);
 
-                UseHeroItem(ev.ItemType);
+                if(!canUse)
+                {
+                    return;
+                }
+
+                if (needsTarget)
+                {
+                    GatherItemTarget(ev.ItemType);
+                }
             });
 
             eventDispatcher.Subscribe((ItemTargetSelectedInEvent ev) =>
             {
+                stateMachine.Next(LevelLogicState.StartTurn);
+
+                heroItemEffectLogicAction.ApplyItemEffect(ItemType.Sword, ev.GridPosition);
+
                 stateMachine.Next(LevelLogicState.PerformTurn);
             });
         }
@@ -133,7 +145,24 @@ namespace Barista.Shared.Logic
             stateMachine.Next(LevelLogicState.WaitingForPlayerAction);
         }
 
-        private void UseHeroItem(ItemType itemType)
+        private bool CanUseHeroItem(ItemType itemType, out bool needsTarget)
+        {
+            needsTarget = heroItemEffectLogicAction.ItemEffectNeedsTarget(itemType);
+
+            if (needsTarget)
+            {
+                IReadOnlyList<Int2> targets = heroItemEffectLogicAction.GetItemAvaliableTargets(itemType);
+
+                if (targets.Count > 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void GatherItemTarget(ItemType itemType)
         {
             bool needsTarget = heroItemEffectLogicAction.ItemEffectNeedsTarget(itemType);
 
@@ -141,7 +170,10 @@ namespace Barista.Shared.Logic
             {
                 IReadOnlyList<Int2> targets = heroItemEffectLogicAction.GetItemAvaliableTargets(itemType);
 
-                eventDispatcher.Dispatch(new ItemNeedsTargetSelectionOutEvent(itemType, targets));
+                if (targets.Count > 0)
+                {
+                    eventDispatcher.Dispatch(new ItemNeedsTargetSelectionOutEvent(itemType, targets));
+                }
             }
         }
 

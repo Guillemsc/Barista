@@ -8,5 +8,6 @@ namespace Barista.Shared.Logic
     {
         bool ItemEffectNeedsTarget(ItemType itemType);
         IReadOnlyList<Int2> GetItemAvaliableTargets(ItemType itemType);
+        void ApplyItemEffect(ItemType itemType, Int2 targetPosition);
     }
 }

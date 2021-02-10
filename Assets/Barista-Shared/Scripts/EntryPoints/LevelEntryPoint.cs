@@ -103,6 +103,7 @@ namespace Barista.Shared.EntryPoints
 
             IHeroItemEffectLogicAction heroItemEffectLogicAction = new HeroItemEffectLogicAction(
                 heroEntityRepository,
+                enemyEntityRepository,
                 levelState
                 );
 

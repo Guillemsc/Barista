@@ -11,6 +11,7 @@ namespace Barista.Shared.Logic.Pathfinding
         private readonly EnvironmentPathfindingUtils pathfindingUtils;
 
         private Int2 origin;
+        private bool avoidEntities;
         private int range;
 
         public ExpansionFactory(EnvironmentPathfindingUtils pathfindingUtils)
@@ -18,9 +19,10 @@ namespace Barista.Shared.Logic.Pathfinding
             this.pathfindingUtils = pathfindingUtils;
         }
 
-        public List<Int2> Expand(Int2 origin, int range)
+        public List<Int2> Expand(Int2 origin, bool avoidEntities, int range)
         {
             this.origin = origin;
+            this.avoidEntities = avoidEntities;
             this.range = range;
 
             BFSPathfindingAlgorithm<Int2> algorithm = new BFSPathfindingAlgorithm<Int2>(
@@ -52,16 +54,22 @@ namespace Barista.Shared.Logic.Pathfinding
 
             foreach (Int2 positionToCheck in toCheck)
             {
-                if (pathfindingUtils.InsideRange(origin, positionToCheck, range))
+                if (!pathfindingUtils.InsideRange(origin, positionToCheck, range))
                 {
-                    if (pathfindingUtils.WalkabilityGridContains(positionToCheck))
-                    {
-                        if (!pathfindingUtils.IsUsedByEntity(positionToCheck))
-                        {
-                            ret.Add(positionToCheck);
-                        }
-                    }
+                    continue;
                 }
+
+                if (!pathfindingUtils.WalkabilityGridContains(positionToCheck))
+                {
+                    continue;
+                }
+
+                if (avoidEntities && pathfindingUtils.IsUsedByEntity(positionToCheck))
+                {
+                    continue;
+                }
+
+                ret.Add(positionToCheck);
             }
 
             return ret;

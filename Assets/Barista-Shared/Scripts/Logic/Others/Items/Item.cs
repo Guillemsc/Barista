@@ -3,18 +3,16 @@ using System;
 
 namespace Barista.Shared.Logic.Items
 {
-    public class Item : IItem
+    public abstract class Item : IItem
     {
         public ItemType Type { get; }
+        public ItemTargetType ItemTargetType { get; }
         public int Stacks { get; private set; } 
-        public IItemEffect Effect { get; private set; }
-        public IRange EffectRange { get; }
 
-        public Item(ItemType type, IItemEffect effect, IRange effectRange)
+        public Item(ItemType type, ItemTargetType itemTargetType)
         {
             Type = type;
-            Effect = effect;
-            EffectRange = effectRange;
+            ItemTargetType = itemTargetType;
         }
 
         public void AddStack()

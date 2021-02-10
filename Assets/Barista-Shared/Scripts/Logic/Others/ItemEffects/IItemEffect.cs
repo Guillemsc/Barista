@@ -1,9 +1,9 @@
-﻿using Barista.Shared.Logic.Range;
+﻿using Barista.Shared.Entities.Enemy;
 
 namespace Barista.Shared.Logic.Items
 {
-    public interface IItemEffect
+    public abstract class EnemyItemEffect
     {
-        void Execute();
+        public abstract void Execute(EnemyEntity enemyEntity);
     }
 }
