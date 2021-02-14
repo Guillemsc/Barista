@@ -1,5 +1,4 @@
-﻿using Barista.Shared.Entities.Item;
-using Barista.Shared.Logic.Items;
+﻿using Barista.Shared.Logic.Items;
 using Juce.Core.Architecture;
 using Juce.Core.Containers;
 using System.Collections.Generic;
@@ -27,7 +26,7 @@ namespace Barista.Shared.Entities.Hero
         public void SetGridPosition(Int2 position)
         {
             LastGridPosition = GridPosition;
-            GridPosition = position;
+            GridPosition =position;
         }
     }
 }

@@ -8,7 +8,6 @@ namespace Barista.Client.Actions
     public interface IHeroMovedAction : IAction
     {
         void Invoke(
-            EnvironmentEntity environmentEntity, 
             HeroEntity heroEntity, 
             IReadOnlyList<Int2> path
             );

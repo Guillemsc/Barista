@@ -1,23 +1,20 @@
-﻿using Barista.Shared.Entities.Enemy;
-using Barista.Shared.Entities.Environment;
-using Barista.Shared.Entities.Hero;
-using Barista.Shared.Entities.Item;
+﻿using Barista.Shared.Dto.Entities;
 using System.Collections.Generic;
 
 namespace Barista.Shared.Events
 {
     public class SetupLevelOutEvent
     {
-        public EnvironmentEntity EnvironmentEntity { get; }
-        public HeroEntity HeroEntity { get; }
-        public IReadOnlyList<EnemyEntity> EnemyEntities { get; }
-        public IReadOnlyList<ItemEntity> ItemEntities { get; }
+        public EnvironmentEntityDto EnvironmentEntity { get; }
+        public HeroEntityDto HeroEntity { get; }
+        public IReadOnlyList<EnemyEntityDto> EnemyEntities { get; }
+        public IReadOnlyList<ItemEntityDto> ItemEntities { get; }
 
         public SetupLevelOutEvent(
-            EnvironmentEntity environmentEntity,
-            HeroEntity heroEntity,
-            IReadOnlyList<EnemyEntity> enemyEntities,
-            IReadOnlyList<ItemEntity> itemEntities
+            EnvironmentEntityDto environmentEntity,
+            HeroEntityDto heroEntity,
+            IReadOnlyList<EnemyEntityDto> enemyEntities,
+            IReadOnlyList<ItemEntityDto> itemEntities
             )
         {
             EnvironmentEntity = environmentEntity;

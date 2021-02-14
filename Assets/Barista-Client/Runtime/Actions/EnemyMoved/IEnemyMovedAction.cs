@@ -8,7 +8,6 @@ namespace Barista.Client.Actions
     public interface IEnemyMovedAction : IAction
     {
         void Invoke(
-            EnvironmentEntity environmentEntity,
             EnemyEntity enemyEntity,
             IReadOnlyList<Int2> path
             );

@@ -1,32 +1,31 @@
 ﻿
-using Barista.Client.Instructions.State;
+using Barista.Client.Level.Instructions.State;
 using Barista.Client.State;
-using Barista.Client.Timelines;
 using Juce.Core.Sequencing;
 
 namespace Barista.Client.Actions
 {
-    public class EndTurnAction : IEndTurnAction
+    public class EndTurnAction 
     {
-        private readonly LevelTimelines levelTimelines;
-        private readonly State<bool> levelState;
+        //private readonly LevelTimelines levelTimelines;
+        //private readonly State<bool> levelState;
 
-        public EndTurnAction(
-            LevelTimelines levelTimelines,
-            State<bool> levelState
-            )
-        {
-            this.levelTimelines = levelTimelines;
-            this.levelState = levelState;
-        }
+        //public EndTurnAction(
+        //    LevelTimelines levelTimelines,
+        //    State<bool> levelState
+        //    )
+        //{
+        //    this.levelTimelines = levelTimelines;
+        //    this.levelState = levelState;
+        //}
 
-        public void Invoke()
-        {
-            InstructionsSequence sequence = new InstructionsSequence();
+        //public void Invoke()
+        //{
+        //    InstructionsSequence sequence = new InstructionsSequence();
 
-            sequence.Append(new SetBoolStateInstruction(levelState, false));
+        //    sequence.Append(new SetBoolStateInstruction(levelState, false));
 
-            levelTimelines.MainTimeline.Play(sequence);
-        }
+        //    levelTimelines.MainTimeline.Play(sequence);
+        //}
     }
 }

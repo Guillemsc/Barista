@@ -7,14 +7,12 @@ namespace Barista.Shared.Events
 {
     public class HeroMovedOutEvent
     {
-        public EnvironmentEntity EnvironmentEntity { get; }
-        public HeroEntity HeroEntity { get; }
+        public int HeroEntityInstanceId { get; }
         public IReadOnlyList<Int2> Path { get; }
 
-        public HeroMovedOutEvent(EnvironmentEntity environmentEntity, HeroEntity heroEntity, IReadOnlyList<Int2> path)
+        public HeroMovedOutEvent(int heroEntityInstanceId, IReadOnlyList<Int2> path)
         {
-            EnvironmentEntity = environmentEntity;
-            HeroEntity = heroEntity;
+            HeroEntityInstanceId = heroEntityInstanceId;
             Path = path;
         }
     }

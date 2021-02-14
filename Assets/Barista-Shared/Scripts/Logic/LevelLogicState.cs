@@ -4,9 +4,11 @@
     {
         Setup,
         Start,
-        WaitingForPlayerAction,
-        StartTurn,
-        PerformTurn,
-        EndTurn,
+        WaitingForHeroAction,
+        WaitingForHeroActionTarget,
+        TurnStart,
+        HeroTurn,
+        EnemiesTurn,
+        TurnEnd,
     }
 }

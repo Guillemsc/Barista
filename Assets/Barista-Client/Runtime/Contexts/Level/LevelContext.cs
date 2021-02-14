@@ -1,12 +1,16 @@
 ﻿using Barista.Client.Configuration.Levels;
-using Barista.Client.EntryPoints;
+using Barista.Client.Level.EntryPoints;
+using Barista.Client.Level.Logic;
 using Barista.Client.Utils;
 using Barista.Shared.Configuration;
 using Barista.Shared.EntryPoints;
+using Barista.Shared.Logic;
 using Barista.Shared.Logic.Items;
 using Juce.Core.Containers;
 using Juce.Core.Events;
 using Juce.CoreUnity.Contexts;
+using Juce.CoreUnity.Service;
+using Juce.CoreUnity.Services;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,12 +20,15 @@ namespace Barista.Client.Contexts.Level
     {
         [SerializeField] private LevelContextReferences levelContextReferences = default;
 
-        private LevelEntryPoint levelEntryPoint;
-        private LevelViewEntryPoint levelViewEntryPoint;
+        private TickablesService tickablesService;
+
+        private LevelLogicViewEntryPoint levelLogicViewEntryPoint;
 
         protected override void Init()
         {
             ContextsProvider.Register(this);
+
+            tickablesService = ServicesProvider.GetService<TickablesService>();
         }
 
         protected override void CleanUp()
@@ -33,21 +40,18 @@ namespace Barista.Client.Contexts.Level
 
         public void StartLevel(LevelConfiguration levelConfiguration)
         {
-           LevelSetup levelSetup = GetTestSetup(levelConfiguration);
+            LevelSetup levelSetup = GetTestSetup(levelConfiguration);
 
-            IEventDispatcher eventDispatcher = new EventDispatcher();
-
-            levelEntryPoint = new LevelEntryPoint(
-                eventDispatcher,
-                levelSetup
-                );
+            EventDispatcherAndReceiver eventDispatcher = new EventDispatcherAndReceiver();
+            EventDispatcherAndReceiver eventRecevier = new EventDispatcherAndReceiver();
 
             LevelViewEntryPointSettings settings = new LevelViewEntryPointSettings(
                 true
                 );
 
-            levelViewEntryPoint = new LevelViewEntryPoint(
+            levelLogicViewEntryPoint = new LevelLogicViewEntryPoint(
                 settings,
+                eventRecevier,
                 eventDispatcher,
                 levelContextReferences.LevelLibrariesReferences.EnvironmentsLibrary,
                 levelContextReferences.LevelLibrariesReferences.HeroesLibrary,
@@ -56,22 +60,22 @@ namespace Barista.Client.Contexts.Level
                 levelContextReferences.LevelLibrariesReferences.EffectsLibrary
                 );
 
-            levelViewEntryPoint.Execute();
-            levelViewEntryPoint.OnFinish += OnLevelViewEntryPointFinished;
 
-            levelEntryPoint.Execute();
+            LevelLogic levelLogic = new LevelLogicFactory().Create(
+                eventDispatcher, 
+                eventRecevier, 
+                levelSetup
+                );
+
+            levelLogicViewEntryPoint.Start();
+
+            tickablesService.AddTickable(levelLogic);
+            levelLogic.Start();
         }
 
         private void CleanUpLevel()
         {
-            if (levelViewEntryPoint == null)
-            {
-                return;
-            }
 
-            levelViewEntryPoint.OnFinish -= OnLevelViewEntryPointFinished;
-            levelViewEntryPoint.CleanUp();
-            levelViewEntryPoint = null;
         }
 
         private void OnLevelViewEntryPointFinished(LevelViewEntryPointResult levelViewEntryPointResult)

@@ -1,214 +1,227 @@
-﻿using Barista.Shared.Entities.Enemy;
-using Barista.Shared.Entities.Environment;
-using Barista.Shared.Entities.Hero;
-using Barista.Shared.Entities.Item;
-using Barista.Shared.Events;
-using Barista.Shared.Logic.EnemyActions;
-using Barista.Shared.Logic.Items;
-using Barista.Shared.Logic.Pathfinding;
-using Barista.Shared.State;
-using Juce.Core.Containers;
+﻿using Barista.Shared.Logic.States;
 using Juce.Core.Events;
 using Juce.Core.State;
-using System.Collections.Generic;
+using Juce.Core.Tickable;
 
 namespace Barista.Shared.Logic
 {
-    public class LevelLogic
+    public class LevelLogic : ITickable
     {
-        private readonly IEventDispatcher eventDispatcher;
-        private readonly EnemyEntityRepository enemyEntityRepository;
-        private readonly ILevelSetupLogicActions levelSetupLogicActions;
-        private readonly IHeroMovementActions heroMovementActions;
-        private readonly IEnemyMovementActions enemyMovementActions;
-        private readonly IHeroGrabItemsLogicAction heroGrabItemsLogicAction;
-        private readonly IHeroItemEffectLogicAction heroItemEffectLogicAction;
+        public IEventReceiver EventReceiver { get; }
+        public LevelLogicUseCasesRepository UseCases { get; }
+        public StateMachine<LevelLogicState> StateMachine { get; }
 
-        private StateMachine<LevelLogicState> stateMachine = new StateMachine<LevelLogicState>();
+        public ExpectingItemTargetBoard ExpectingItemTargetBoard { get; }
 
         public LevelLogic(
-            IEventDispatcher eventDispatcher,
-            EnemyEntityRepository enemyEntityRepository,
-            ILevelSetupLogicActions levelSetupLogicActions,
-            IHeroMovementActions heroMovementActions,
-            IEnemyMovementActions enemyMovementActions,
-            IHeroGrabItemsLogicAction heroGrabItemsLogicAction,
-            IHeroItemEffectLogicAction heroItemEffectLogicAction
+            IEventReceiver eventReceiver,
+            LevelLogicUseCasesRepository useCases
             )
         {
-            this.eventDispatcher = eventDispatcher;
-            this.enemyEntityRepository = enemyEntityRepository;
-            this.levelSetupLogicActions = levelSetupLogicActions;
-            this.heroMovementActions = heroMovementActions;
-            this.enemyMovementActions = enemyMovementActions;
-            this.heroGrabItemsLogicAction = heroGrabItemsLogicAction;
-            this.heroItemEffectLogicAction = heroItemEffectLogicAction;
+            EventReceiver = eventReceiver;
+            UseCases = useCases;
+
+            StateMachine = new StateMachine<LevelLogicState>();
+
+            ExpectingItemTargetBoard = new ExpectingItemTargetBoard();
 
             GenerateStates();
-            Link();
         }
 
         private void GenerateStates()
         {
-            stateMachine.RegisterState(LevelLogicState.Setup, SetupState);
-            stateMachine.RegisterState(LevelLogicState.Start, StartState);
-            stateMachine.RegisterState(LevelLogicState.WaitingForPlayerAction, WaitingForPlayerActionState);
-            stateMachine.RegisterState(LevelLogicState.StartTurn, StartTurnState);
-            stateMachine.RegisterState(LevelLogicState.PerformTurn, PerformTurnState);
-            stateMachine.RegisterState(LevelLogicState.EndTurn, EndTurnState);
+            // States
+            StateMachine.RegisterState(LevelLogicState.Setup, new SetupState(this));
+            StateMachine.RegisterState(LevelLogicState.Start, new StartState(this));
+            StateMachine.RegisterState(LevelLogicState.WaitingForHeroAction, new WaitingForHeroActionState(this));
+            StateMachine.RegisterState(LevelLogicState.WaitingForHeroActionTarget, new WaitingForHeroItemTargetState(this));
+            StateMachine.RegisterState(LevelLogicState.TurnStart, new TurnStartState(this));
+            StateMachine.RegisterState(LevelLogicState.HeroTurn, new HeroTurnState(this));
+            StateMachine.RegisterState(LevelLogicState.EnemiesTurn, new EnemiesTurnState(this));
+            StateMachine.RegisterState(LevelLogicState.TurnEnd, new TurnEndState(this));
 
-            stateMachine.RegisterConnection(LevelLogicState.Setup, LevelLogicState.Start);
-            stateMachine.RegisterConnection(LevelLogicState.Start, LevelLogicState.WaitingForPlayerAction);
-            stateMachine.RegisterConnection(LevelLogicState.WaitingForPlayerAction, LevelLogicState.StartTurn);
-            stateMachine.RegisterConnection(LevelLogicState.StartTurn, LevelLogicState.PerformTurn);
-            stateMachine.RegisterConnection(LevelLogicState.PerformTurn, LevelLogicState.EndTurn);
-            stateMachine.RegisterConnection(LevelLogicState.EndTurn, LevelLogicState.WaitingForPlayerAction);
-        }
+            // Connections
+            StateMachine.RegisterConnection(LevelLogicState.Setup, LevelLogicState.Start);
 
-        private void Link()
-        {
-            eventDispatcher.Subscribe((MoveHeroInEvent ev) =>
-            {
-                stateMachine.Next(LevelLogicState.StartTurn);
+            StateMachine.RegisterConnection(LevelLogicState.Start, LevelLogicState.WaitingForHeroAction);
 
-                heroMovementActions.MoveHero(ev.Direction);
+            StateMachine.RegisterConnection(LevelLogicState.WaitingForHeroAction, LevelLogicState.TurnStart);
+            StateMachine.RegisterConnection(LevelLogicState.WaitingForHeroAction, LevelLogicState.WaitingForHeroActionTarget);
 
-                stateMachine.Next(LevelLogicState.PerformTurn);
-            });
+            StateMachine.RegisterConnection(LevelLogicState.WaitingForHeroActionTarget, LevelLogicState.TurnStart);
+            StateMachine.RegisterConnection(LevelLogicState.WaitingForHeroActionTarget, LevelLogicState.WaitingForHeroAction);
 
-            eventDispatcher.Subscribe((UseItemInEvent ev) =>
-            {
-                bool canUse = CanUseHeroItem(ev.ItemType, out bool needsTarget);
+            StateMachine.RegisterConnection(LevelLogicState.TurnStart, LevelLogicState.HeroTurn);
 
-                if(!canUse)
-                {
-                    return;
-                }
+            StateMachine.RegisterConnection(LevelLogicState.HeroTurn, LevelLogicState.EnemiesTurn);
 
-                if (needsTarget)
-                {
-                    GatherItemTarget(ev.ItemType);
-                }
-            });
+            StateMachine.RegisterConnection(LevelLogicState.EnemiesTurn, LevelLogicState.TurnEnd);
 
-            eventDispatcher.Subscribe((ItemTargetSelectedInEvent ev) =>
-            {
-                stateMachine.Next(LevelLogicState.StartTurn);
-
-                heroItemEffectLogicAction.ApplyItemEffect(ItemType.Sword, ev.GridPosition);
-
-                stateMachine.Next(LevelLogicState.PerformTurn);
-            });
+            StateMachine.RegisterConnection(LevelLogicState.TurnEnd, LevelLogicState.WaitingForHeroAction);
         }
 
         public void Start()
         {
-            levelSetupLogicActions.Setup();
-
-            stateMachine.Start(LevelLogicState.Start);
+            StateMachine.Start(LevelLogicState.Setup);
         }
 
-        private void SetupState()
+        public void Tick()
         {
-            levelSetupLogicActions.Setup();
-
-            stateMachine.Next(LevelLogicState.WaitingForPlayerAction);
+            DequeueAllEvents();
         }
 
-        private void StartState()
+        private void DequeueAllEvents()
         {
-            stateMachine.Next(LevelLogicState.WaitingForPlayerAction);
-        }
-
-        private void WaitingForPlayerActionState()
-        {
-            
-        }
-
-        private void StartTurnState()
-        {
-            eventDispatcher.Dispatch(new StartTurnOutEvent());
-        }
-
-        private void PerformTurnState()
-        {
-            PerfromHeroTurn();
-            PerformEnemiesTurn();
-
-            stateMachine.Next(LevelLogicState.EndTurn);
-        }
-
-        private void EndTurnState()
-        {
-            eventDispatcher.Dispatch(new EndTurnOutEvent());
-
-            stateMachine.Next(LevelLogicState.WaitingForPlayerAction);
-        }
-
-        private bool CanUseHeroItem(ItemType itemType, out bool needsTarget)
-        {
-            needsTarget = heroItemEffectLogicAction.ItemEffectNeedsTarget(itemType);
-
-            if (needsTarget)
+            while(EventReceiver.EventQueueCount > 0)
             {
-                IReadOnlyList<Int2> targets = heroItemEffectLogicAction.GetItemAvaliableTargets(itemType);
-
-                if (targets.Count > 0)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private void GatherItemTarget(ItemType itemType)
-        {
-            bool needsTarget = heroItemEffectLogicAction.ItemEffectNeedsTarget(itemType);
-
-            if (needsTarget)
-            {
-                IReadOnlyList<Int2> targets = heroItemEffectLogicAction.GetItemAvaliableTargets(itemType);
-
-                if (targets.Count > 0)
-                {
-                    eventDispatcher.Dispatch(new ItemNeedsTargetSelectionOutEvent(itemType, targets));
-                }
+                EventReceiver.DequeNext();
             }
         }
 
-        private void PerfromHeroTurn()
-        {
-            heroGrabItemsLogicAction.HeroTryGrabItem();
-        }
+        //private void Link()
+        //{
+        //    eventDispatcher.Subscribe((MoveHeroInEvent ev) =>
+        //    {
+        //        stateMachine.Next(LevelLogicState.StartTurn);
 
-        private void PerformEnemiesTurn()
-        {
-            foreach (EnemyEntity enemyEntity in enemyEntityRepository.Elements)
-            {
-                IEnemyAction enemyAction = enemyEntity.EnemyBrain.GenerateNextEnemyAction(enemyEntity);
+        //        heroMovementActions.MoveHero(ev.Direction);
 
-                switch (enemyAction)
-                {
-                    case AttackEntityEnemyAction action:
-                        {
+        //        stateMachine.Next(LevelLogicState.PerformTurn);
+        //    });
 
-                        }
-                        break;
+        //    eventDispatcher.Subscribe((UseItemInEvent ev) =>
+        //    {
+        //        bool canUse = CanUseHeroItem(ev.ItemType, out bool needsTarget);
 
-                    case MoveTowardsHeroEnemyAction action:
-                        {
-                            enemyMovementActions.MoveEnemyTowardsHero(enemyEntity, 1);
-                        }
-                        break;
+        //        if(!canUse)
+        //        {
+        //            return;
+        //        }
 
-                    case IdleEnemyAction action:
-                        {
+        //        if (needsTarget)
+        //        {
+        //            GatherItemTarget(ev.ItemType);
+        //        }
+        //    });
 
-                        }
-                        break;
-                }
-            }
-        }
+        //    eventDispatcher.Subscribe((ItemTargetSelectedInEvent ev) =>
+        //    {
+        //        stateMachine.Next(LevelLogicState.StartTurn);
+
+        //        heroItemEffectLogicAction.ApplyItemEffect(ItemType.Sword, ev.GridPosition);
+
+        //        stateMachine.Next(LevelLogicState.PerformTurn);
+        //    });
+        //}
+
+        //public void Start()
+        //{
+        //    levelSetupLogicActions.Setup();
+
+        //    stateMachine.Start(LevelLogicState.Start);
+        //}
+
+        //private void SetupState()
+        //{
+        //    levelSetupLogicActions.Setup();
+
+        //    stateMachine.Next(LevelLogicState.WaitingForPlayerAction);
+        //}
+
+        //private void StartState()
+        //{
+        //    stateMachine.Next(LevelLogicState.WaitingForPlayerAction);
+        //}
+
+        //private void WaitingForPlayerActionState()
+        //{
+
+        //}
+
+        //private void StartTurnState()
+        //{
+        //    eventDispatcher.Dispatch(new StartTurnOutEvent());
+        //}
+
+        //private void PerformTurnState()
+        //{
+        //    PerfromHeroTurn();
+        //    PerformEnemiesTurn();
+
+        //    stateMachine.Next(LevelLogicState.EndTurn);
+        //}
+
+        //private void EndTurnState()
+        //{
+        //    eventDispatcher.Dispatch(new EndTurnOutEvent());
+
+        //    stateMachine.Next(LevelLogicState.WaitingForPlayerAction);
+        //}
+
+        //private bool CanUseHeroItem(ItemType itemType, out bool needsTarget)
+        //{
+        //    needsTarget = heroItemEffectLogicAction.ItemEffectNeedsTarget(itemType);
+
+        //    if (needsTarget)
+        //    {
+        //        IReadOnlyList<Int2> targets = heroItemEffectLogicAction.GetItemAvaliableTargets(itemType);
+
+        //        if (targets.Count > 0)
+        //        {
+        //            return true;
+        //        }
+        //    }
+
+        //    return false;
+        //}
+
+        //private void GatherItemTarget(ItemType itemType)
+        //{
+        //    bool needsTarget = heroItemEffectLogicAction.ItemEffectNeedsTarget(itemType);
+
+        //    if (needsTarget)
+        //    {
+        //        IReadOnlyList<Int2> targets = heroItemEffectLogicAction.GetItemAvaliableTargets(itemType);
+
+        //        if (targets.Count > 0)
+        //        {
+        //            eventDispatcher.Dispatch(new ItemNeedsTargetSelectionOutEvent(itemType, targets));
+        //        }
+        //    }
+        //}
+
+        //private void PerfromHeroTurn()
+        //{
+        //    heroGrabItemsLogicAction.HeroTryGrabItem();
+        //}
+
+        //private void PerformEnemiesTurn()
+        //{
+        //    foreach (EnemyEntity enemyEntity in enemyEntityRepository.Elements)
+        //    {
+        //        IEnemyAction enemyAction = enemyEntity.EnemyBrain.GenerateNextEnemyAction(enemyEntity);
+
+        //        switch (enemyAction)
+        //        {
+        //            case AttackEntityEnemyAction action:
+        //                {
+
+        //                }
+        //                break;
+
+        //            case MoveTowardsHeroEnemyAction action:
+        //                {
+        //                    enemyMovementActions.MoveEnemyTowardsHero(enemyEntity, 1);
+        //                }
+        //                break;
+
+        //            case IdleEnemyAction action:
+        //                {
+
+        //                }
+        //                break;
+        //        }
+        //    }
+        //}
     }
 }
