@@ -13,7 +13,7 @@ namespace Barista.Client.Level.Instructions.Environment
             this.environmentEntityViewRepository = environmentEntityViewRepository;
         }
 
-        protected override void OnInstantStart()
+        protected override void OnInstantExecute()
         {
             environmentEntityViewRepository.Despawn();
         }

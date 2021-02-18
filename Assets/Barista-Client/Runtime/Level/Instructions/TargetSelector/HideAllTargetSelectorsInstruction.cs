@@ -2,11 +2,12 @@
 using Juce.Core.Containers;
 using Juce.Core.Sequencing;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Barista.Client.Level.Instructions.TargetSelector
 {
-    public class HideAllTargetSelectorsInstruction : AsyncInstruction
+    public class HideAllTargetSelectorsInstruction : Instruction
     {
         private readonly TargetSelectorViewRepository targetSelectorViewRepository;
 
@@ -17,7 +18,7 @@ namespace Barista.Client.Level.Instructions.TargetSelector
             this.targetSelectorViewRepository = targetSelectorViewRepository;
         }
 
-        protected override async Task OnAsyncStart()
+        protected override async Task OnExecute(CancellationToken cancellationToken)
         {
             Task[] allTasks = new Task[targetSelectorViewRepository.Elements.Count];
 

@@ -20,7 +20,7 @@ namespace Barista.Client.Level.Instructions.Hero
             this.instanceId = instanceId;
         }
 
-        protected override void OnInstantStart()
+        protected override void OnInstantExecute()
         {
             heroEntityViewRepository.Spawn(typeId, instanceId);
         }

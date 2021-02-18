@@ -1,21 +1,23 @@
-﻿using Barista.Shared.Entities.Environment;
-using Barista.Shared.Logic.Items;
+﻿using Barista.Shared.Logic.Items;
 using Juce.Core.Containers;
 using System.Collections.Generic;
 
 namespace Barista.Shared.Events
 {
-    public class ItemNeedsTargetSelectionOutEvent
+    public class StartHeroItemTargetSelectionOutEvent
     {
         public ItemType ItemType { get; }
+        public ItemTargetType ItemTargetType { get; }
         public IReadOnlyList<Int2> AvaliableTargetPositions { get; }
 
-        public ItemNeedsTargetSelectionOutEvent(
+        public StartHeroItemTargetSelectionOutEvent(
             ItemType itemType,
+            ItemTargetType itemTargetType,
             IReadOnlyList<Int2> avaliableTargetPositions
             )
         {
             ItemType = itemType;
+            ItemTargetType = itemTargetType;
             AvaliableTargetPositions = avaliableTargetPositions;
         }
     }

@@ -117,7 +117,8 @@ namespace Barista.Shared.EntryPoints
                 );
 
             IStartExpectingHeroItemTargetUseCase startExpectingHeroItemTargetUseCase = new StartExpectingHeroItemTargetUseCase(
-                eventDispatcher
+                eventDispatcher,
+                expansionFactory
                 );
 
             IHeroAttackEnemyUseCase heroAttackEnemyUseCase = new HeroAttackEnemyUseCase(

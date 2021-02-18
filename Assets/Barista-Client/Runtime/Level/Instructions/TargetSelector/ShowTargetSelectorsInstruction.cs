@@ -26,7 +26,7 @@ namespace Barista.Client.Level.Instructions.TargetSelector
             this.gridPositions = gridPositions;
         }
 
-        protected override void OnInstantStart()
+        protected override void OnInstantExecute()
         {
             targetSelectorViewRepository.DespawnAll();
             targetSelectorViewRepository.Spawn(gridPositions);

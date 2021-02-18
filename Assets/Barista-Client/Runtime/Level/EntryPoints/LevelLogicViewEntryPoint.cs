@@ -138,14 +138,10 @@ namespace Barista.Client.Level.EntryPoints
             //    targetSelectorViewFactory
             //    );
 
-            TimelinesPlayer timelinesPlayer = new TimelinesPlayer();
-            tickablesService.AddTickable(timelinesPlayer);
-            AddCleanUpAction(() => tickablesService.RemoveTickable(timelinesPlayer));
+            Sequencer mainSequencer = new Sequencer();
 
             LevelLogicViewTimelines levelLogicViewTimelines = new LevelLogicViewTimelines(
-                timelinesPlayer.AddTimeline(),
-                timelinesPlayer.AddTimeline()
-                );
+                new Sequencer());
 
             LevelActionsRepository levelActionsRepository = new LevelActionsRepository();
 
@@ -161,6 +157,7 @@ namespace Barista.Client.Level.EntryPoints
                 );
 
             ISetupLevelUseCase setupLevelUseCase = new SetupLevelUseCase(
+                mainSequencer,
                 environmentEntityViewRepository,
                 heroEntityViewRepository,
                 enemyEntityViewRepository,
@@ -168,20 +165,24 @@ namespace Barista.Client.Level.EntryPoints
                 );
 
             IExpectingHeroActionChangedUseCase expectingHeroActionChangedUseCase = new ExpectingHeroActionChangedUseCase(
+                mainSequencer,
                 expectingHeroActionState
                 );
 
             IMoveHeroUseCase moveHeroUseCase = new MoveHeroUseCase(
+                mainSequencer,
                 environmentEntityViewRepository,
                 heroEntityViewRepository
                 );
 
             IMoveEnemyUseCase moveEnemyUseCase = new MoveEnemyUseCase(
+                mainSequencer,
                 environmentEntityViewRepository,
                 enemyEntityViewRepository
                 );
 
             IHeroGrabbedItemUseCase heroGrabbedItemUseCase = new HeroGrabbedItemUseCase(
+                mainSequencer,
                 itemEntityViewRepository,
                 levelUIReferences.ItemsViewUI
                 );

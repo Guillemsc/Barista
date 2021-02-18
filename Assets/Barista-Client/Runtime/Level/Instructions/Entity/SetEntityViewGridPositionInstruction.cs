@@ -25,7 +25,7 @@ namespace Barista.Client.Level.Instructions.Entity
             this.gridPosition = gridPosition;
         }
 
-        protected override void OnInstantStart()
+        protected override void OnInstantExecute()
         {
             Vector3Int gridPositionVector = TilemapUtils.Int2ToVector3(gridPosition);
 

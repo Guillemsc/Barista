@@ -48,17 +48,7 @@ namespace Barista.Client.Level.Logic
 
         private void RunUseCase(Func<Instruction> context)
         {
-            InstructionsSequence sequence = new InstructionsSequence();
 
-            sequence.AppendCallback(() => playing = true);
-
-            sequence.Append(new ContextualInstruction(context));
-
-            sequence.AppendCallback(() => playing = false);
-
-            sequence.AppendCallback(EventReceiver.DequeNext);
-
-            LevelLogicViewTimelines.MainTimeline.Play(sequence);
         }
 
         private void TryDequeNext()
@@ -85,45 +75,45 @@ namespace Barista.Client.Level.Logic
 
             EventReceiver.Subscribe((SetupLevelOutEvent ev) =>
             {
-                RunUseCase(() => LevelLogicViewUseCasesRepository.SetupLevelUseCase.Setup(
+                LevelLogicViewUseCasesRepository.SetupLevelUseCase.Invoke(
                     ev.EnvironmentEntity,
                     ev.HeroEntity,
                     ev.EnemyEntities,
                     ev.ItemEntities
-                    ));
+                    );
             });
 
             EventReceiver.Subscribe((ExpectingHeroActionChangedOutEvent ev) =>
             {
-                RunUseCase(() => LevelLogicViewUseCasesRepository.ExpectingHeroActionChangedUseCase.Invoke(
+                LevelLogicViewUseCasesRepository.ExpectingHeroActionChangedUseCase.Invoke(
                     ev.Expecting
-                    ));
+                    );
             });
 
             EventReceiver.Subscribe((HeroMovedOutEvent ev) =>
             {
-                RunUseCase(() => LevelLogicViewUseCasesRepository.MoveHeroUseCase.Move(
-                      ev.HeroEntityInstanceId,
-                      ev.Path
-                      ));
+                LevelLogicViewUseCasesRepository.MoveHeroUseCase.Invoke(
+                    ev.HeroEntityInstanceId,
+                    ev.Path
+                    );
             });
 
             EventReceiver.Subscribe((EnemyMovedOutEvent ev) =>
             {
-                RunUseCase(() => LevelLogicViewUseCasesRepository.MoveEnemyUseCase.Move(
-                      ev.EnemyEntityInstanceId,
-                      ev.Path
-                      ));
+                LevelLogicViewUseCasesRepository.MoveEnemyUseCase.Invoke(
+                    ev.EnemyEntityInstanceId,
+                    ev.Path
+                    );
             });
 
             EventReceiver.Subscribe((HeroGrabbedItemOutEvent ev) =>
             {
-                RunUseCase(() => LevelLogicViewUseCasesRepository.HeroGrabbedItemUseCase.Invoke(
-                      ev.HeroEntityInstanceId,
-                      ev.ItemEntityInstanceId,
-                      ev.ItemType,
-                      ev.ItemTotalStacks
-                      ));
+                LevelLogicViewUseCasesRepository.HeroGrabbedItemUseCase.Invoke(
+                    ev.HeroEntityInstanceId,
+                    ev.ItemEntityInstanceId,
+                    ev.ItemType,
+                    ev.ItemTotalStacks
+                    );
             });
         }
     }

@@ -21,7 +21,7 @@ namespace Barista.Client.Level.Instructions.UI.Item
             this.itemStacks = itemStacks;
         }
 
-        protected override void OnInstantStart()
+        protected override void OnInstantExecute()
         {
             itemsUIView.SetItemStacks(itemType, itemStacks);
         }

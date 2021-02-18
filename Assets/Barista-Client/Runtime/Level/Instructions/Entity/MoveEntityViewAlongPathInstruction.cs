@@ -1,18 +1,18 @@
 ﻿using Barista.Client.Utils;
 using Barista.Client.View.Entities;
 using Barista.Client.View.Entities.Environment;
-using Barista.Client.View.Entities.Hero;
 using Juce.Core.Containers;
 using Juce.Core.Sequencing;
 using Juce.Tween;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Barista.Client.Level.Instructions.Entity
 {
-    public class MoveEntityViewAlongPathInstruction : AsyncInstruction
+    public class MoveEntityViewAlongPathInstruction : Instruction
     {
         private readonly Lazy<EnvironmentEntityView> environmentEntityView;
         private readonly Lazy<IMovableEntityView> movableEntityView;
@@ -29,7 +29,7 @@ namespace Barista.Client.Level.Instructions.Entity
             this.path = path;
         }
 
-        protected override Task OnAsyncStart()
+        protected override Task OnExecute(CancellationToken cancellationToken)
         {
             TaskCompletionSource<bool> taskCompletitionSource = new TaskCompletionSource<bool>();
 
@@ -55,6 +55,8 @@ namespace Barista.Client.Level.Instructions.Entity
             sequence.onCompleteOrKill += () => taskCompletitionSource.SetResult(true);
 
             sequence.Play();
+
+            cancellationToken.Register(sequence.Kill);
 
             return taskCompletitionSource.Task;
         }

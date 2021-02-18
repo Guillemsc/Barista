@@ -17,7 +17,7 @@ namespace Barista.Client.Level.Instructions.State
             this.value = value;
         }
 
-        protected override void OnInstantStart()
+        protected override void OnInstantExecute()
         {
             state.Value = value;
         }

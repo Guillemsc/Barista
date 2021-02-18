@@ -4,37 +4,51 @@ using Barista.Client.View.Entities.Hero;
 using Juce.Core.Containers;
 using Juce.Core.Sequencing;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Barista.Client.Level.UseCases
 {
     public class MoveHeroUseCase : IMoveHeroUseCase
     {
+        private readonly Sequencer mainSequencer;
         private readonly EnvironmentEntityViewRepository environmentEntityViewRepository;
         private readonly HeroEntityViewRepository heroEntityViewRepository;
 
         public MoveHeroUseCase(
+            Sequencer mainSequencer,
             EnvironmentEntityViewRepository environmentEntityViewRepository,
             HeroEntityViewRepository heroEntityViewRepository
             )
         {
+            this.mainSequencer = mainSequencer;
             this.environmentEntityViewRepository = environmentEntityViewRepository;
             this.heroEntityViewRepository = heroEntityViewRepository;
         }
 
-        public Instruction Move(
+        public void Invoke(
             int heroEntityInstanceId,
             IReadOnlyList<Int2> path
             )
         {
-            InstructionsSequence sequence = new InstructionsSequence();
+            mainSequencer.Play(ct => Execute(
+                heroEntityInstanceId, 
+                path, 
+                ct
+                ));
+        }
 
-            sequence.Append(new MoveEntityViewAlongPathInstruction(
+        private async Task Execute(
+            int heroEntityInstanceId,
+            IReadOnlyList<Int2> path,
+            CancellationToken cancellationToken
+            )
+        {
+            await new MoveEntityViewAlongPathInstruction(
                 environmentEntityViewRepository.LoadedEnvironmentLazy,
                 heroEntityViewRepository.GetLazyAsMovable(heroEntityInstanceId),
                 path
-                ));
-
-            return sequence;
+                ).Execute(cancellationToken);
         }
     }
 }

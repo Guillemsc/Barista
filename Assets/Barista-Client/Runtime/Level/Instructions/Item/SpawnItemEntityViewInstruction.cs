@@ -21,7 +21,7 @@ namespace Barista.Client.Level.Instructions.Item
             this.instanceId = instanceId;
         }
 
-        protected override void OnInstantStart()
+        protected override void OnInstantExecute()
         {
             itemEntityViewRepository.Spawn(typeId, instanceId);
         }

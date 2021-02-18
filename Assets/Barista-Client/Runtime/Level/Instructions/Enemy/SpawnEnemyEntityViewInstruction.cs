@@ -20,7 +20,7 @@ namespace Barista.Client.Level.Instructions.Enemy
             this.instanceId = instanceId;
         }
 
-        protected override void OnInstantStart()
+        protected override void OnInstantExecute()
         {
             enemyEntityViewRepository.Spawn(typeId, instanceId);
         }

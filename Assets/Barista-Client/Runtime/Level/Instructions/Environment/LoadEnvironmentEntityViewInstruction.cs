@@ -20,7 +20,7 @@ namespace Barista.Client.Level.Instructions.Environment
             this.instanceId = instanceId;
         }
 
-        protected override void OnInstantStart()
+        protected override void OnInstantExecute()
         {
             environmentEntityViewRepository.Spawn(typeId, instanceId);
         }

@@ -4,44 +4,60 @@ using Barista.Client.UI.Items;
 using Barista.Client.View.Entities.Item;
 using Barista.Shared.Logic.Items;
 using Juce.Core.Sequencing;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Barista.Client.Level.UseCases
 {
     public class HeroGrabbedItemUseCase : IHeroGrabbedItemUseCase
     {
+        private readonly Sequencer mainSequencer;
         private readonly ItemEntityViewRepository itemEntityViewRepository;
         private readonly ItemsUIView itemsUIView;
 
         public HeroGrabbedItemUseCase(
+            Sequencer mainSequencer,
             ItemEntityViewRepository itemEntityViewRepository,
             ItemsUIView itemsUIView
             )
         {
+            this.mainSequencer = mainSequencer;
             this.itemEntityViewRepository = itemEntityViewRepository;
             this.itemsUIView = itemsUIView;
         }
 
-        public Instruction Invoke(
-            int heroEntityInstanceId, 
+        public void Invoke(
+            int heroEntityInstanceId,
             int itemEntityInstanceId, 
             ItemType itemType,
             int itemTotalStacks
             )
         {
-            InstructionsSequence sequence = new InstructionsSequence();
+            mainSequencer.Play(ct => Execute(
+                itemEntityInstanceId,
+                itemType,
+                itemTotalStacks,
+                ct
+                ));
+        }
 
-            sequence.Append(new DespawnItemEntityViewInstruction(
+        private async Task Execute(
+            int itemEntityInstanceId,
+            ItemType itemType,
+            int itemTotalStacks,
+            CancellationToken cancellationToken
+            )
+        {
+            await new DespawnItemEntityViewInstruction(
                 itemEntityViewRepository,
                 itemEntityInstanceId
-                ));
+                ).Execute(cancellationToken);
 
-            sequence.Append(new SetItemEntityUIStacksInstruction(
+            await new SetItemEntityUIStacksInstruction(
                 itemsUIView,
                 itemType,
                 itemTotalStacks
-                ));
-
-            return sequence;
+                ).Execute(cancellationToken);
         }
     }
 }
